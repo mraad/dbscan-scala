@@ -6,9 +6,14 @@ version := "0.1"
 
 isSnapshot := true
 
-licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+licenses +=("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
 resolvers += "Local Maven Repository" at "file:///" + Path.userHome + "/.m2/repository"
+
+libraryDependencies ++= Seq(
+  "com.esri.geometry" % "esri-geometry-api" % "1.2.1",
+  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
+)
 
 publishMavenStyle := true
 
@@ -33,9 +38,3 @@ pomExtra := (
         <email>mraad@esri.com</email>
       </developer>
     </developers>)
-
-
-libraryDependencies ++= Seq(
-  "com.esri.geometry" % "esri-geometry-api" % "1.2.1",
-  "org.scalatest" %% "scalatest" % "2.2.1" % "test"
-)
