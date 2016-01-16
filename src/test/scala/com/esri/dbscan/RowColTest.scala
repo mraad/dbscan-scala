@@ -5,6 +5,29 @@ import org.scalatest.{FlatSpec, Matchers}
 /**
   */
 class RowColTest extends FlatSpec with Matchers {
+
+  "Edge point left" should "have 2 keys" in {
+    val keys = DBSCANPoint(0, 12, 5).toRowColKeys(10, 3)
+    keys.length shouldBe 2
+
+    keys(0).row shouldBe 0
+    keys(0).col shouldBe 1
+
+    keys(1).row shouldBe 0
+    keys(1).col shouldBe 0
+  }
+
+  "Edge point right" should "have 2 keys" in {
+    val keys = DBSCANPoint(0, 18, 5).toRowColKeys(10, 3)
+    keys.length shouldBe 2
+
+    keys(0).row shouldBe 0
+    keys(0).col shouldBe 1
+
+    keys(1).row shouldBe 0
+    keys(1).col shouldBe 2
+  }
+
   "Point in center of cell" should "have 1 key" in {
     val keys = DBSCANPoint(0, 5, 5).toRowColKeys(10, 2)
     keys.length shouldBe 1

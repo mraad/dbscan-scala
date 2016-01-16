@@ -26,16 +26,16 @@ class DBSCANPoint(val id: Int, val point: Point2D) extends Serializable {
   }
 
   def toRowColKeys(cellSize: Double, eps: Double) = {
-    val xfac = (point.y / cellSize).floor
-    val yfac = (point.x / cellSize).floor
+    val xfac = (point.x / cellSize).floor
+    val yfac = (point.y / cellSize).floor
     val cx = xfac * cellSize
     val cy = yfac * cellSize
     val xmin = cx + eps
     val ymin = cy + eps
     val xmax = cx + cellSize - eps
     val ymax = cy + cellSize - eps
-    val row = xfac.toInt
-    val col = yfac.toInt
+    val row = yfac.toInt
+    val col = xfac.toInt
     val rowcolArr = new ArrayBuffer[RowCol](4)
     rowcolArr += RowCol(row, col)
     if (point.x < xmin) {
