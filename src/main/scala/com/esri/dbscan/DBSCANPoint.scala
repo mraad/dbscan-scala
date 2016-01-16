@@ -64,7 +64,7 @@ class DBSCANPoint(val id: Int, val point: Point2D) extends Serializable {
     rowcolArr
   }
 
-  override def toString = s"LabelPoint($id,$point,$flag)"
+  override def toString = s"DBSCANPoint($id,$point,$flag)"
 }
 
 object DBSCANPoint extends Serializable {

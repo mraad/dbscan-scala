@@ -10,7 +10,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
   val eps2 = eps * eps
   val visited = mutable.Set[DBSCANPoint]()
 
-  def clusterWithID(points: Iterable[DBSCANPoint]) = {
+  def clusterWithID(points: Iterable[DBSCANPoint]): Iterable[DBSCANPoint] = {
     cluster(points)
       .zipWithIndex.flatMap {
       case (iter, index) => {
@@ -21,7 +21,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
     points
   }
 
-  def cluster(points: Iterable[DBSCANPoint]) = {
+  def cluster(points: Iterable[DBSCANPoint]): Iterable[Seq[DBSCANPoint]] = {
 
     // TODO - Use spatial index - it is worth it ?
     val neighborhood = points.map(point => {
@@ -49,7 +49,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
   def expand(point: DBSCANPoint,
              neighbors: Array[DBSCANPoint],
              neighborhood: Map[DBSCANPoint, Array[DBSCANPoint]]
-            ) = {
+            ): Some[Seq[DBSCANPoint]] = {
     val cluster = new ArrayBuffer[DBSCANPoint]()
     cluster += point
     val queue = mutable.Queue(neighbors)
