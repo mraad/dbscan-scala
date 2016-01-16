@@ -25,7 +25,7 @@ class DBSCANPoint(val id: Int, val point: Point2D) extends Serializable {
     Point2D.sqrDistance(point, that.point)
   }
 
-  def toPartitionKeys(cellSize: Double, eps: Double) = {
+  def toRowColKeys(cellSize: Double, eps: Double) = {
     val xfac = (point.y / cellSize).floor
     val yfac = (point.x / cellSize).floor
     val cx = xfac * cellSize
