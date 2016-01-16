@@ -1,8 +1,8 @@
 organization := "com.esri"
-name := "dbscan"
+name := "dbscan-scala"
 version := "0.1"
 description := "DBSCAN implementation in Scala using Esri Geometry Library"
-// homepage := Some(url(s"https://github.com/mraad/${name.value}#readme"))
+homepage := Some(url(s"https://github.com/mraad/${name.value}#readme"))
 isSnapshot := true
 
 scalaVersion := "2.10.5"
