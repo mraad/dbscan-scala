@@ -1,10 +1,14 @@
 organization := "com.esri"
-
 name := "dbscan"
-
 version := "0.1"
-
+description := "DBSCAN implementation in Scala using Esri Geometry Library"
+// homepage := Some(url(s"https://github.com/mraad/${name.value}#readme"))
 isSnapshot := true
+
+scalaVersion := "2.10.5"
+crossScalaVersions := Seq("2.10.5", "2.11.6")
+
+bintrayPackageLabels := Seq("DBSCAN", "Esri Geometry Library")
 
 licenses +=("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
 
@@ -17,8 +21,10 @@ libraryDependencies ++= Seq(
 
 publishMavenStyle := true
 
+publishArtifact in Test := false
+
 pomExtra := (
-  <url>https://github.com/mraad/hex-grid</url>
+  <url>https://github.com/mraad/dbscan-scala</url>
     <licenses>
       <license>
         <name>Apache License, Verision 2.0</name>
@@ -37,4 +43,5 @@ pomExtra := (
         <url>https://github.com/mraad</url>
         <email>mraad@esri.com</email>
       </developer>
-    </developers>)
+    </developers>
+  )
