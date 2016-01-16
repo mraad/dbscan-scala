@@ -6,6 +6,8 @@ version := "0.1"
 
 isSnapshot := true
 
+licenses += ("Apache-2.0", url("https://www.apache.org/licenses/LICENSE-2.0.html"))
+
 resolvers += "Local Maven Repository" at "file:///" + Path.userHome + "/.m2/repository"
 
 publishMavenStyle := true
