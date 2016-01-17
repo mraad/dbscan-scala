@@ -146,4 +146,5 @@ class RowColTest extends FlatSpec with Matchers {
     keys(1).row shouldBe -1
     keys(1).col shouldBe 0
   }
+
 }

@@ -21,6 +21,10 @@ class DBSCANPoint(val id: Int, val point: Point2D) extends Serializable {
     Smear.smear(id)
   }
 
+  def x() = point.x
+
+  def y() = point.y
+
   def distance2(that: DBSCANPoint) = {
     Point2D.sqrDistance(point, that.point)
   }
