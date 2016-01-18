@@ -6,6 +6,17 @@ import scala.io.Source
 
 class DBSCANTest extends FlatSpec with Matchers {
 
+  "DBSCAN" should "cluster" in {
+    val points = Array(
+      DBSCANPoint(0, 9, 9),
+      DBSCANPoint(1, 11, 9)
+    )
+
+    val clusters = DBSCAN(3, 2).cluster(points).toList
+
+    clusters.length shouldBe 1
+  }
+
   "DBSCAN" should "find one cluster" in {
     val points = Array(
       DBSCANPoint(0, 0, 0),
@@ -15,7 +26,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       DBSCANPoint(4, 0, 8),
       DBSCANPoint(5, 3, 0)
     )
-    val clusters = DBSCAN(2.5, 1).cluster(points).toList
+    val clusters = DBSCAN(2.5, 2).cluster(points).toList
 
     clusters.length shouldBe 1
     clusters(0) should contain only(points(0), points(1), points(2), points(3), points(4))

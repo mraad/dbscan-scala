@@ -9,6 +9,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
   val eps2 = eps * eps
   val visited = mutable.Set[DBSCANPoint]()
+  // val minNeighbors = minPoints - 1
 
   def clusterWithID(points: Iterable[DBSCANPoint]): Iterable[DBSCANPoint] = {
     cluster(points)
@@ -23,15 +24,16 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
   def cluster(points: Iterable[DBSCANPoint]): Iterable[Seq[DBSCANPoint]] = {
 
-    // TODO - Use spatial index - it is worth it ?
+    // TODO - Use spatial index
     val neighborhood = points.map(point => {
-      (point, points.filter(other => other != point && other.distance2(point) < eps2).toArray)
+      (point, points.view.withFilter(other => other.distance2(point) < eps2).toArray)
     }).toMap
 
     points.flatMap(point => {
       if (!visited.contains(point)) {
         visited += point
         val neighbors = neighborhood(point)
+        // println(point + neighbors.mkString(" neighbors are ", ",", ""))
         if (neighbors.length < minPoints) {
           point.flag = Flag.NOISE
           None

@@ -29,7 +29,7 @@ class DBSCANPoint(val id: Int, val point: Point2D) extends Serializable {
     Point2D.sqrDistance(point, that.point)
   }
 
-  def toRowColKeys(cellSize: Double, eps: Double) = {
+  def toRowCols(cellSize: Double, eps: Double) = {
     val xfac = (point.x / cellSize).floor
     val yfac = (point.y / cellSize).floor
     val cx = xfac * cellSize
@@ -68,7 +68,7 @@ class DBSCANPoint(val id: Int, val point: Point2D) extends Serializable {
     rowcolArr
   }
 
-  override def toString = s"DBSCANPoint($id,$point,$flag)"
+  override def toString = s"DBSCANPoint($id,${point.x},${point.y},$flag,$clusterID)"
 }
 
 object DBSCANPoint extends Serializable {
