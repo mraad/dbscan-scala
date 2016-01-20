@@ -49,7 +49,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
   def expand(point: DBSCANPoint,
              neighbors: Array[DBSCANPoint],
              neighborhood: Map[DBSCANPoint, Array[DBSCANPoint]]
-            ): Some[Seq[DBSCANPoint]] = {
+            ) = {
     val cluster = new ArrayBuffer[DBSCANPoint]()
     cluster += point
     val queue = mutable.Queue(neighbors)
@@ -67,7 +67,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
         }
       }
     }
-    Some(cluster.toSeq)
+    Some(cluster)
   }
 }
 
