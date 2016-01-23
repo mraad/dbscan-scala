@@ -25,7 +25,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
     // TODO - Use spatial index
     val neighborhood = points.map(point => {
-      (point, points.view.withFilter(other => other.distance2(point) < eps2).toArray)
+      (point, points.filter(_.distance2(point) <= eps2).toArray)
     }).toMap
 
     points.flatMap(point => {

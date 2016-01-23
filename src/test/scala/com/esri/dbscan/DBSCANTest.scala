@@ -99,5 +99,38 @@ class DBSCANTest extends FlatSpec with Matchers {
     points.filter(_.flag == Flag.NOISE).length shouldBe 20
   }
 
+  /*
+    case class ClusterablePoint(id: Int, x: Double, y: Double) extends Clusterable {
+      override val getPoint: Array[Double] = Array(x, y)
+    }
+
+    "DBSCAN" should "match commons math" in {
+      val smiley = Source.fromURL(getClass.getResource("/smiley1.txt")).getLines().map(line => {
+        val splits = line.split(' ')
+        (splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
+      }).toSeq
+
+      val orig = smiley.map { case (id, x, y) => DBSCANPoint(id, x, y) }
+
+      val dest = smiley.map { case (id, x, y) => ClusterablePoint(id, x, y) }
+
+      val origRes = DBSCAN(200000, 10).cluster(orig).toSeq
+
+      val destRes = new DBSCANClusterer[ClusterablePoint](200000, 10).cluster(dest)
+
+      origRes.length shouldBe destRes.length
+
+      origRes.zipWithIndex.foreach {
+        case (points, i) => {
+          val cluster = destRes.get(i).getPoints
+          points.zipWithIndex.foreach {
+            case (point, j) => {
+              cluster.exists(_.id == point.id) shouldBe true
+            }
+          }
+        }
+      }
+    }
+  */
 
 }
