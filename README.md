@@ -67,3 +67,4 @@ mvn release:perform
 * [https://help.github.com/articles/generating-ssh-keys/](https://help.github.com/articles/generating-ssh-keys/)
 * [http://veithen.github.io/2013/05/26/github-bintray-maven-release-plugin.html](http://veithen.github.io/2013/05/26/github-bintray-maven-release-plugin.html)
 * [http://www.sciweavers.org/free-online-latex-equation-editor](http://www.sciweavers.org/free-online-latex-equation-editor)
+* [http://blog.dominodatalab.com/topology-and-density-based-clustering/](http://blog.dominodatalab.com/topology-and-density-based-clustering/)
