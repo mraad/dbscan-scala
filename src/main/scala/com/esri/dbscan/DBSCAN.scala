@@ -63,7 +63,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
         val neighborNeighbors = neighborhood(neighbor)
         if (neighborNeighbors.length >= minPoints) {
           neighbor.flag = Flag.CORE
-          queue.enqueue(neighborNeighbors)
+          queue += neighborNeighbors
         }
       }
     }
