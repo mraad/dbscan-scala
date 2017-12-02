@@ -27,7 +27,7 @@ And the test code still passes!
 
 ### Boundary Conditions
 
-The concept of neighborhood is implemented as ![](media/eqn_1.png), where ![](media/eqn_2.png) is the eucledian distance between two points. 
+The concept of neighborhood is implemented as ![](media/eqn_1.png), where ![](media/eqn_2.png) is the euclidean distance between two points.
 
 ## Publish to [Bintray](https://bintray.com/mraad/maven/dbscan-scala/view)
 
@@ -57,7 +57,7 @@ mvn release:perform
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.5</version>
 </dependency>
 ```
 
@@ -69,3 +69,4 @@ mvn release:perform
 * <http://www.sciweavers.org/free-online-latex-equation-editor>
 * <http://blog.dominodatalab.com/topology-and-density-based-clustering/>
 * <https://en.wikipedia.org/wiki/OPTICS_algorithm>
+* <http://www.naftaliharris.com/blog/visualizing-dbscan-clustering/>
