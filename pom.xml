@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.esri</groupId>
@@ -34,8 +35,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <scala.compact.version>2.10</scala.compact.version>
-        <scala.version>2.10.6</scala.version>
+        <scala.compact>2.10</scala.compact>
+        <scala.version>${scala.compact}.6</scala.version>
         <java.version>1.8</java.version>
     </properties>
 
@@ -79,17 +80,17 @@
         <dependency>
             <groupId>com.esri.geometry</groupId>
             <artifactId>esri-geometry-api</artifactId>
-            <version>2.0.1</version>
+            <version>2.0.0</version>
             <exclusions>
                 <exclusion>
-                    <groupId>com.fasterxml.jackson</groupId>
+                    <groupId>com.fasterxml.jackson.core</groupId>
                     <artifactId>jackson-core</artifactId>
                 </exclusion>
             </exclusions>
         </dependency>
         <dependency>
             <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_${scala.compact.version}</artifactId>
+            <artifactId>scalatest_${scala.compact}</artifactId>
             <version>2.2.3</version>
             <scope>test</scope>
         </dependency>
@@ -127,7 +128,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <scalaCompatVersion>${scala.compact.version}</scalaCompatVersion>
+                    <scalaCompatVersion>${scala.compact}</scalaCompatVersion>
                     <scalaVersion>${scala.version}</scalaVersion>
                     <recompileMode>incremental</recompileMode>
                     <useZincServer>false</useZincServer>

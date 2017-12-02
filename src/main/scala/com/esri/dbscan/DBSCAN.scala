@@ -15,11 +15,9 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
     cluster(points)
       .zipWithIndex.flatMap {
       case (iter, index) => {
-        iter.foreach(_.clusterID = index)
-        iter
+        iter.map(DBSCANPoint(_, index))
       }
     }
-    points
   }
 
   def cluster(points: Iterable[DBSCANPoint]): Iterable[Seq[DBSCANPoint]] = {
