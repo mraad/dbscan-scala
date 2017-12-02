@@ -1,3 +1,7 @@
 .idea/
 target/
 project/target/
+metastore_db/
+pom.xml.releaseBackup
+release.properties
+*.iml
