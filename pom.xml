@@ -43,7 +43,7 @@
     <distributionManagement>
         <repository>
             <id>bintray</id>
-            <url>https://api.bintray.com/maven/mraad/maven/${project.artifactId}</url>
+            <url>https://api.bintray.com/maven/mraad/maven/${project.artifactId}/;publish=1</url>
         </repository>
     </distributionManagement>
 
