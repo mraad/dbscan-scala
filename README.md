@@ -31,6 +31,7 @@ The concept of neighborhood is implemented as ![](media/eqn_1.png), where ![](me
 ## Publish to [Bintray](https://bintray.com/mraad/maven/dbscan-scala/view)
 
 ```bash
+mvn release:clean
 mvn release:prepare
 mvn release:perform
 ```
