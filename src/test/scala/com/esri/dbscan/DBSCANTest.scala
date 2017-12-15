@@ -133,4 +133,23 @@ class DBSCANTest extends FlatSpec with Matchers {
     }
   */
 
+  "DBScan Randall" should "cluster 3 points" in {
+    /*
+      0 29.5 29.5
+      1 30.5 29.5
+      2 30 30.5
+     */
+    val points = Array(
+      DBSCANPoint(0, 29.5, 29.5),
+      DBSCANPoint(1, 30.5, 29.5),
+      DBSCANPoint(2, 30.0, 30.5)
+    )
+    val iterable = DBSCAN(2.0, 3).clusterWithID(points)
+    iterable should contain theSameElementsAs Seq(
+      DBSCANPoint(0, 29.5, 29.5, Flag.CORE, 0),
+      DBSCANPoint(1, 30.5, 29.5, Flag.CORE, 0),
+      DBSCANPoint(2, 30.0, 30.5, Flag.CORE, 0)
+    )
+  }
+
 }

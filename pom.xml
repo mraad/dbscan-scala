@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.esri</groupId>
@@ -45,25 +46,6 @@
             <url>https://api.bintray.com/maven/mraad/maven/${project.artifactId}/;publish=1</url>
         </repository>
     </distributionManagement>
-
-    <!--
-    <repositories>
-        <repository>
-            <id>cloudera-releases</id>
-            <url>https://repository.cloudera.com/artifactory/cloudera-repos</url>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
-
-    <pluginRepositories>
-        <pluginRepository>
-            <id>scala-tools.org</id>
-            <url>https://oss.sonatype.org/content/groups/scala-tools/</url>
-        </pluginRepository>
-    </pluginRepositories>
-    -->
 
     <dependencies>
         <dependency>

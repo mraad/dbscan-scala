@@ -35,4 +35,8 @@ object DBSCANPoint extends Serializable {
   def apply(that: DBSCANPoint, clusterID: Int): DBSCANPoint = {
     new DBSCANPoint(that.id, that.point, that.flag, clusterID)
   }
+
+  def apply(id: Int, x: Double, y: Double, flag: Flag.Value, clusterID: Int) = {
+    new DBSCANPoint(id, new Point2D(x, y), flag, clusterID)
+  }
 }
