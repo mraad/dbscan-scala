@@ -6,7 +6,7 @@ import scala.io.Source
 
 class DBSCANTest extends FlatSpec with Matchers {
 
-  "DBSCAN" should "cluster" in {
+  it should "cluster" in {
     val points = Array(
       DBSCANPoint(0, 9, 9),
       DBSCANPoint(1, 11, 9)
@@ -17,7 +17,7 @@ class DBSCANTest extends FlatSpec with Matchers {
     clusters.length shouldBe 1
   }
 
-  "DBSCAN" should "find one cluster" in {
+  it should "find one cluster" in {
     val points = Array(
       DBSCANPoint(0, 0, 0),
       DBSCANPoint(1, 0, 2),
@@ -31,13 +31,13 @@ class DBSCANTest extends FlatSpec with Matchers {
     clusters.length shouldBe 1
     clusters(0) should contain only(points(0), points(1), points(2), points(3), points(4))
 
-    points(5).flag shouldBe Flag.NOISE
+    points(5).flag shouldBe Status.NOISE
   }
 
   /**
     * http://people.cs.nctu.edu.tw/~rsliang/dbscan/testdatagen.html
     */
-  "DBSCAN" should "have 6 clusters and 20 outliers" in {
+  it should "have 6 clusters and 20 outliers" in {
 
     val points = Source.fromURL(getClass.getResource("/dat_4_6_6_20.txt")).getLines().map(line => {
       val splits = line.split(' ')
@@ -65,10 +65,10 @@ class DBSCANTest extends FlatSpec with Matchers {
         })
       }
     }
-    points.filter(_.flag == Flag.NOISE).length shouldBe 20
+    points.filter(_.flag == Status.NOISE).length shouldBe 20
   }
 
-  "DBSCAN" should "have 20 clusters and 20 outliers" in {
+  it should "have 20 clusters and 20 outliers" in {
 
     val points = Source.fromURL(getClass.getResource("/dat_4_10_20_20.txt")).getLines().map(line => {
       val splits = line.split(' ')
@@ -96,7 +96,7 @@ class DBSCANTest extends FlatSpec with Matchers {
         })
       }
     }
-    points.filter(_.flag == Flag.NOISE).length shouldBe 20
+    points.filter(_.flag == Status.NOISE).length shouldBe 20
   }
 
   /*
@@ -104,7 +104,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       override val getPoint: Array[Double] = Array(x, y)
     }
 
-    "DBSCAN" should "match commons math" in {
+    it should "match commons math" in {
       val smiley = Source.fromURL(getClass.getResource("/smiley1.txt")).getLines().map(line => {
         val splits = line.split(' ')
         (splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
@@ -133,7 +133,7 @@ class DBSCANTest extends FlatSpec with Matchers {
     }
   */
 
-  "DBScan Randall" should "cluster 3 points" in {
+  it should "test Randall's 3 points" in {
     /*
       0 29.5 29.5
       1 30.5 29.5
@@ -146,10 +146,20 @@ class DBSCANTest extends FlatSpec with Matchers {
     )
     val iterable = DBSCAN(2.0, 3).clusterWithID(points)
     iterable should contain theSameElementsAs Seq(
-      DBSCANPoint(0, 29.5, 29.5, Flag.CORE, 0),
-      DBSCANPoint(1, 30.5, 29.5, Flag.CORE, 0),
-      DBSCANPoint(2, 30.0, 30.5, Flag.CORE, 0)
+      DBSCANPoint(0, 29.5, 29.5, Status.CLASSIFIED, 0),
+      DBSCANPoint(1, 30.5, 29.5, Status.CLASSIFIED, 0),
+      DBSCANPoint(2, 30.0, 30.5, Status.CLASSIFIED, 0)
     )
+  }
+
+  it should "test Eric's use case " in {
+    val points = Source.fromURL(getClass.getResource("/eric.txt")).getLines().map(line => {
+      line.split(' ') match {
+        case Array(id, x, y) => DBSCANPoint(id.toInt, x.toDouble, y.toDouble)
+      }
+    }).toArray
+    val clusters = DBSCAN(2, 3).cluster(points)
+    clusters.head should contain theSameElementsAs points
   }
 
 }

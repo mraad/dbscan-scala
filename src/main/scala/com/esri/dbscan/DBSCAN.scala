@@ -9,7 +9,6 @@ import scala.collection.parallel.ParMap
 class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
   val eps2 = eps * eps
-  val visited = mutable.Set[DBSCANPoint]()
 
   def clusterWithID(points: Iterable[DBSCANPoint]): Iterable[DBSCANPoint] = {
     cluster(points)
@@ -56,14 +55,13 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
     }).toMap
 
     points.flatMap(point => {
-      if (!visited.contains(point)) {
-        visited += point
+      if (point.flag == Status.UNCLASSIFIED) {
         val neighbors = neighborhood(point)
         if (neighbors.length < minPoints) {
-          point.flag = Flag.NOISE
+          point.flag = Status.NOISE
           None
         } else {
-          point.flag = Flag.CORE
+          point.flag = Status.CLASSIFIED
           expand(point, neighbors, neighborhood)
         }
       }
@@ -76,21 +74,23 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
   def expand(point: DBSCANPoint,
              neighbors: Array[DBSCANPoint],
              neighborhood: ParMap[DBSCANPoint, Array[DBSCANPoint]]
-            ) = {
+            ): Option[Seq[DBSCANPoint]] = {
     val cluster = new ArrayBuffer[DBSCANPoint]()
     cluster += point
-    val queue = mutable.Queue(neighbors)
+    val queue = new mutable.Queue[DBSCANPoint]()
+    queue ++= neighbors
     while (queue.nonEmpty) {
-      for {
-        neighbor <- queue.dequeue
-        if !visited.contains(neighbor)
-      } {
-        visited += neighbor
+      val neighbor = queue.dequeue
+      if (neighbor.flag == Status.NOISE) {
+        neighbor.flag = Status.CLASSIFIED
+        cluster += neighbor
+      }
+      else if (neighbor.flag == Status.UNCLASSIFIED) {
+        neighbor.flag = Status.CLASSIFIED
         cluster += neighbor
         val neighborNeighbors = neighborhood(neighbor)
         if (neighborNeighbors.length >= minPoints) {
-          neighbor.flag = Flag.CORE
-          queue += neighborNeighbors
+          queue ++= neighborNeighbors
         }
       }
     }
