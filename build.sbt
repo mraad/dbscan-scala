@@ -2,7 +2,7 @@ organization := "com.esri"
 
 name := "dbscan-scala"
 
-version := "0.13"
+version := "0.14"
 
 isSnapshot := true
 
@@ -12,7 +12,7 @@ crossScalaVersions := Seq("2.10.6", "2.11.8")
 
 resolvers += Resolver.mavenLocal
 
-libraryDependencies += "com.esri.geometry" % "esri-geometry-api" % "2.0.0"
+// libraryDependencies += "com.esri.geometry" % "esri-geometry-api" % "2.0.0"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 pomExtra :=
