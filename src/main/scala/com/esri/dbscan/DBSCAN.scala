@@ -23,7 +23,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
   def cluster(points: Iterable[DBSCANPoint]): Iterable[Seq[DBSCANPoint]] = {
 
     val (xmin, ymin, xmax, ymax) = points.par.foldLeft(
-      (Double.NegativeInfinity, Double.NegativeInfinity, Double.PositiveInfinity, Double.PositiveInfinity)) {
+      (Double.PositiveInfinity, Double.PositiveInfinity, Double.NegativeInfinity, Double.NegativeInfinity)) {
       case ((xmin, ymin, xmax, ymax), point) => {
         (xmin min point.x, ymin min point.y, xmax max point.x, ymax max point.y)
       }
