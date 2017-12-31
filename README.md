@@ -57,7 +57,7 @@ mvn release:perform
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.11</version>
+    <version>0.13</version>
 </dependency>
 ```
 

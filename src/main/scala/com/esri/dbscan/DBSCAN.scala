@@ -22,12 +22,14 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
   def cluster(points: Iterable[DBSCANPoint]): Iterable[Seq[DBSCANPoint]] = {
 
-    val (xmin, ymin, xmax, ymax) = points.par.foldLeft(
-      (Double.PositiveInfinity, Double.PositiveInfinity, Double.NegativeInfinity, Double.NegativeInfinity)) {
-      case ((xmin, ymin, xmax, ymax), point) => {
-        (xmin min point.x, ymin min point.y, xmax max point.x, ymax max point.y)
+    val (xmin, ymin, xmax, ymax) = points
+      .par
+      .foldLeft(
+        (Double.PositiveInfinity, Double.PositiveInfinity, Double.NegativeInfinity, Double.NegativeInfinity)) {
+        case ((xmin, ymin, xmax, ymax), point) => {
+          (xmin min point.x, ymin min point.y, xmax max point.x, ymax max point.y)
+        }
       }
-    }
 
     val qt = new QuadTree(new Envelope2D(xmin, ymin, xmax, ymax), 16)
     val index2Point = points.zipWithIndex.map {
@@ -36,23 +38,25 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
       }
     }.toMap
 
-    val neighborhood = points.par.map(p => {
-      val arr = new ArrayBuffer[DBSCANPoint]()
-      val xmin = p.x - eps
-      val ymin = p.y - eps
-      val xmax = p.x + eps
-      val ymax = p.y + eps
-      val iterator = qt.getIterator(new Envelope2D(xmin, ymin, xmax, ymax), 0.0000001)
-      var index = iterator.next
-      while (index != -1) {
-        val q = index2Point(index)
-        if ((p distance2 q) < eps2) {
-          arr += q
+    val neighborhood = points
+      .par
+      .map(p => {
+        val arr = new ArrayBuffer[DBSCANPoint]()
+        val xmin = p.x - eps
+        val ymin = p.y - eps
+        val xmax = p.x + eps
+        val ymax = p.y + eps
+        val iterator = qt.getIterator(new Envelope2D(xmin, ymin, xmax, ymax), 0.0000001)
+        var index = iterator.next
+        while (index != -1) {
+          val q = index2Point(index)
+          if ((p distance2 q) < eps2) {
+            arr += q
+          }
+          index = iterator.next
         }
-        index = iterator.next
-      }
-      p -> arr.toArray
-    }).toMap
+        p -> arr.toArray
+      }).toMap
 
     points.flatMap(point => {
       if (point.flag == Status.UNCLASSIFIED) {

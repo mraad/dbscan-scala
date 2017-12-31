@@ -1,19 +1,16 @@
 package com.esri.dbscan
 
-import com.esri.core.geometry.Point2D
 import com.esri.dbscan.Status.Status
 import com.esri.smear.Smear
 
 /**
   */
-class DBSCANPoint(val id: Int, val point: Point2D, var flag: Status = Status.UNCLASSIFIED, val clusterID: Int = -1) extends Serializable {
+class DBSCANPoint(val id: Int, val x: Double, val y: Double, var flag: Status = Status.UNCLASSIFIED, val clusterID: Int = -1) extends Serializable {
 
-  def x() = point.x
-
-  def y() = point.y
-
-  def distance2(that: DBSCANPoint) = {
-    Point2D.sqrDistance(point, that.point)
+  def distance2(that: DBSCANPoint): Double = {
+    val dx = that.x - this.x
+    val dy = that.y - this.y
+    dx * dx + dy * dy
   }
 
   override def equals(other: Any): Boolean = other match {
@@ -25,19 +22,19 @@ class DBSCANPoint(val id: Int, val point: Point2D, var flag: Status = Status.UNC
     Smear.smear(id)
   }
 
-  override def toString = s"DBSCANPoint($id,${point.x},${point.y},$flag,$clusterID)"
+  override def toString(): String = s"DBSCANPoint($id,$x,$y,$flag,$clusterID)"
 }
 
 object DBSCANPoint extends Serializable {
   def apply(id: Int, x: Double, y: Double): DBSCANPoint = {
-    new DBSCANPoint(id, new Point2D(x, y))
+    new DBSCANPoint(id, x, y)
   }
 
   def apply(that: DBSCANPoint, clusterID: Int): DBSCANPoint = {
-    new DBSCANPoint(that.id, that.point, that.flag, clusterID)
+    new DBSCANPoint(that.id, that.x, that.y, that.flag, clusterID)
   }
 
-  def apply(id: Int, x: Double, y: Double, flag: Status.Value, clusterID: Int) = {
-    new DBSCANPoint(id, new Point2D(x, y), flag, clusterID)
+  def apply(id: Int, x: Double, y: Double, flag: Status.Value, clusterID: Int): DBSCANPoint = {
+    new DBSCANPoint(id, x, y, flag, clusterID)
   }
 }
