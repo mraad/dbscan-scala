@@ -1,14 +1,12 @@
 package com.esri.dbscan
 
-import com.esri.core.geometry.{Envelope2D, QuadTree}
-
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 import scala.collection.parallel.ParMap
 
 class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
-  val eps2 = eps * eps
+  // val eps2 = eps * eps
 
   def clusterWithID(points: Iterable[DBSCANPoint]): Iterable[DBSCANPoint] = {
     cluster(points)
@@ -41,7 +39,16 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
     })
   }
 
-  def calcNeighborhood(points: Iterable[DBSCANPoint]) = {
+  def calcNeighborhood(points: Iterable[DBSCANPoint]): ParMap[DBSCANPoint, Seq[DBSCANPoint]] = {
+    val si = points.foldLeft(SpatialIndex(eps))(_ + _)
+    points
+      .par
+      .map(p => p -> (si findNeighbors p))
+      .toMap
+  }
+
+  /*
+  def calcNeighborhood(points: Iterable[DBSCANPoint]): ParMap[DBSCANPoint, Array[DBSCANPoint]] = {
 
     val (xmin, ymin, xmax, ymax) = points
       .par
@@ -79,10 +86,11 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
         p -> arr.toArray
       }).toMap
   }
+  */
 
   def expand(point: DBSCANPoint,
-             neighbors: Array[DBSCANPoint],
-             neighborhood: ParMap[DBSCANPoint, Array[DBSCANPoint]]
+             neighbors: Seq[DBSCANPoint],
+             neighborhood: ParMap[DBSCANPoint, Seq[DBSCANPoint]]
             ): Option[Seq[DBSCANPoint]] = {
     val cluster = new ArrayBuffer[DBSCANPoint]()
     cluster += point

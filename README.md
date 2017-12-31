@@ -57,13 +57,13 @@ mvn release:perform
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.13</version>
+    <version>0.14</version>
 </dependency>
 ```
 
 ### TODO
 
-- Remove dependency on `esri-geometry-api`
+- ~~Remove dependency on `esri-geometry-api`~~
 - Make DBSCANPoint multi-dimensional
 
 ### References
