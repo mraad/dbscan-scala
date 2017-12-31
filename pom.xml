@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.14-SNAPSHOT</version>
+    <version>0.14</version>
     <packaging>jar</packaging>
 
     <url>https://github.com/mraad/dbscan-scala</url>
@@ -21,7 +20,7 @@
     <scm>
         <url>https://github.com/mraad/dbscan-scala</url>
         <connection>scm:git:https://github.com/mraad/dbscan-scala.git</connection>
-        <tag>${project.artifactId}-${project.version}</tag>
+        <tag>dbscan-scala-0.14</tag>
     </scm>
 
     <developers>
