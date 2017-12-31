@@ -4,7 +4,7 @@
 
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.11</version>
+    <version>0.12-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <url>https://github.com/mraad/dbscan-scala</url>
@@ -20,7 +20,7 @@
     <scm>
         <url>https://github.com/mraad/dbscan-scala</url>
         <connection>scm:git:https://github.com/mraad/dbscan-scala.git</connection>
-        <tag>dbscan-scala-0.11</tag>
+        <tag>${project.artifactId}-${project.version}</tag>
     </scm>
 
     <developers>
