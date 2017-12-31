@@ -1,6 +1,6 @@
 # DBSCAN in Scala
 
-[DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) implementation in Scala using [Esri Geometry API](https://github.com/Esri/geometry-api-java).
+[DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) 2D (for now) implementation in Scala.
 
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
@@ -63,7 +63,7 @@ mvn release:perform
 
 ### TODO
 
-- ~~Remove dependency on `esri-geometry-api`~~
+- ~~Remove dependency on [Esri Geometry API](https://github.com/Esri/geometry-api-java)~~
 - Make DBSCANPoint multi-dimensional
 
 ### References

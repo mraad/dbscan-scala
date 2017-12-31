@@ -51,10 +51,7 @@
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${scala.version}</version>
-            <!--
-            <scope>compile</scope>
-            <optional>true</optional>
-            -->
+            <scope>provided</scope>
         </dependency>
         <!--
         <dependency>
