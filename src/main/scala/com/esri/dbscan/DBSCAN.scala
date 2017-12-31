@@ -14,13 +14,34 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
     cluster(points)
       .zipWithIndex
       .flatMap {
-        case (iter, index) => {
-          iter.map(DBSCANPoint(_, index))
+        case (iter, clusterID) => {
+          iter.map(_.updateClusterID(clusterID))
         }
       }
   }
 
   def cluster(points: Iterable[DBSCANPoint]): Iterable[Seq[DBSCANPoint]] = {
+
+    val neighborhood = calcNeighborhood(points)
+
+    points.flatMap(point => {
+      if (point.flag == Status.UNCLASSIFIED) {
+        val neighbors = neighborhood(point)
+        if (neighbors.length < minPoints) {
+          point.flag = Status.NOISE
+          None
+        } else {
+          point.flag = Status.CLASSIFIED
+          expand(point, neighbors, neighborhood)
+        }
+      }
+      else {
+        None
+      }
+    })
+  }
+
+  def calcNeighborhood(points: Iterable[DBSCANPoint]) = {
 
     val (xmin, ymin, xmax, ymax) = points
       .par
@@ -38,7 +59,7 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
       }
     }.toMap
 
-    val neighborhood = points
+    points
       .par
       .map(p => {
         val arr = new ArrayBuffer[DBSCANPoint]()
@@ -57,22 +78,6 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
         }
         p -> arr.toArray
       }).toMap
-
-    points.flatMap(point => {
-      if (point.flag == Status.UNCLASSIFIED) {
-        val neighbors = neighborhood(point)
-        if (neighbors.length < minPoints) {
-          point.flag = Status.NOISE
-          None
-        } else {
-          point.flag = Status.CLASSIFIED
-          expand(point, neighbors, neighborhood)
-        }
-      }
-      else {
-        None
-      }
-    })
   }
 
   def expand(point: DBSCANPoint,
