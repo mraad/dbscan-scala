@@ -61,6 +61,11 @@ mvn release:perform
 </dependency>
 ```
 
+### TODO
+
+- Remove dependency on `esri-geometry-api`
+- Make DBSCANPoint multi-dimensional
+
 ### References
 
 * <http://people.cs.nctu.edu.tw/~rsliang/dbscan/testdatagen.html>
