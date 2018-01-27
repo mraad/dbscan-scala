@@ -64,6 +64,7 @@ mvn release:perform
 ### TODO
 
 - ~~Remove dependency on [Esri Geometry API](https://github.com/Esri/geometry-api-java)~~
+- Make DBSCANPoint immutable and return ClusteredPoint
 - Make DBSCANPoint multi-dimensional
 
 ### References

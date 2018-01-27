@@ -12,7 +12,9 @@ class DBSCANTest extends FlatSpec with Matchers {
       DBSCANPoint(1, 11, 9)
     )
 
-    val clusters = DBSCAN(3, 2).cluster(points).toList
+    val clusters = DBSCAN(3, 2)
+      .clusters(points)
+      .toList
 
     clusters.length shouldBe 1
   }
@@ -26,7 +28,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       DBSCANPoint(4, 0, 8),
       DBSCANPoint(5, 3, 0)
     )
-    val clusters = DBSCAN(2.5, 2).cluster(points).toList
+    val clusters = DBSCAN(2.5, 2).clusters(points).toList
 
     clusters.length shouldBe 1
     clusters(0) should contain only(points(0), points(1), points(2), points(3), points(4))
@@ -39,64 +41,57 @@ class DBSCANTest extends FlatSpec with Matchers {
     */
   it should "have 6 clusters and 20 outliers" in {
 
-    val points = Source.fromURL(getClass.getResource("/dat_4_6_6_20.txt")).getLines().map(line => {
-      val splits = line.split(' ')
-      DBSCANPoint(splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
-    }).toArray
+    val points = Source
+      .fromURL(getClass.getResource("/dat_4_6_6_20.txt"))
+      .getLines()
+      .map(line => {
+        val splits = line.split(' ')
+        DBSCANPoint(splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
+      }).toIterable
 
-    val results = Source.fromURL(getClass.getResource("/res_4_6_6_20.txt")).getLines().map(line => {
-      val splits = line.split(',')
-      splits.tail.map(_.toInt)
-    }).toArray
+    val results = Source
+      .fromURL(getClass.getResource("/res_4_6_6_20.txt"))
+      .getLines()
+      .flatMap(line => {
+        val splits = line.split(',')
+        val clusterID = splits.head.toInt
+        splits.tail.map(_.toInt -> clusterID)
+      }).toMap
 
-    val clusters = DBSCAN(4, 6).cluster(points).toList
+    DBSCAN(4, 6)
+      .cluster(points)
+      .foreach(point => {
+        point.clusterID + 1 shouldBe results.getOrElse(point.id, 0)
+      })
 
-    clusters.length shouldBe 6
-
-    clusters.zipWithIndex.foreach {
-      case (cluster, index) => {
-        val result = results(index)
-        cluster.foreach(point => {
-          result should contain(point.id)
-        })
-        val ids = cluster.map(_.id)
-        result.foreach(id => {
-          ids should contain(id)
-        })
-      }
-    }
-    points.filter(_.flag == Status.NOISE).length shouldBe 20
+    points.filter(_.flag == Status.NOISE).size shouldBe 20
   }
 
   it should "have 20 clusters and 20 outliers" in {
 
-    val points = Source.fromURL(getClass.getResource("/dat_4_10_20_20.txt")).getLines().map(line => {
-      val splits = line.split(' ')
-      DBSCANPoint(splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
-    }).toArray
+    val points = Source
+      .fromURL(getClass.getResource("/dat_4_10_20_20.txt"))
+      .getLines()
+      .map(line => {
+        val splits = line.split(' ')
+        DBSCANPoint(splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
+      }).toArray
 
-    val results = Source.fromURL(getClass.getResource("/res_4_10_20_20.txt")).getLines().map(line => {
-      val splits = line.split(',')
-      splits.tail.map(_.toInt)
-    }).toArray
+    val results = Source.fromURL(getClass.getResource("/res_4_10_20_20.txt"))
+      .getLines()
+      .flatMap(line => {
+        val splits = line.split(',')
+        val clusterID = splits.head.toInt
+        splits.tail.map(_.toInt -> clusterID)
+      }).toMap
 
-    val clusters = DBSCAN(4, 10).cluster(points).toList
+    DBSCAN(4, 10)
+      .cluster(points)
+      .foreach(point => {
+        point.clusterID + 1 shouldBe results.getOrElse(point.id, 0)
+      })
 
-    clusters.length shouldBe 20
-
-    clusters.zipWithIndex.foreach {
-      case (cluster, index) => {
-        val result = results(index)
-        cluster.foreach(point => {
-          result should contain(point.id)
-        })
-        val ids = cluster.map(_.id)
-        result.foreach(id => {
-          ids should contain(id)
-        })
-      }
-    }
-    points.filter(_.flag == Status.NOISE).length shouldBe 20
+    points.filter(_.flag == Status.NOISE).size shouldBe 20
   }
 
   /*
@@ -144,11 +139,30 @@ class DBSCANTest extends FlatSpec with Matchers {
       DBSCANPoint(1, 30.5, 29.5),
       DBSCANPoint(2, 30.0, 30.5)
     )
-    val iterable = DBSCAN(2.0, 3).clusterWithID(points)
+    val iterable = DBSCAN(2.0, 3).cluster(points)
     iterable should contain theSameElementsAs Seq(
       DBSCANPoint(0, 29.5, 29.5, Status.CLASSIFIED, 0),
       DBSCANPoint(1, 30.5, 29.5, Status.CLASSIFIED, 0),
       DBSCANPoint(2, 30.0, 30.5, Status.CLASSIFIED, 0)
+    )
+  }
+
+  it should "test Randall's second case" in {
+    /*
+      0 37.6 30.0
+      1 39.2 30.0
+      2 40.8 30.0
+     */
+    val points = Array(
+      DBSCANPoint(0, 37.6, 30.0),
+      DBSCANPoint(1, 39.2, 30.0),
+      DBSCANPoint(2, 40.8, 30.0)
+    )
+    val iterable = DBSCAN(2.0, 3).cluster(points)
+    iterable should contain theSameElementsAs Seq(
+      DBSCANPoint(0, 37.6, 30.0, Status.CLASSIFIED, 0),
+      DBSCANPoint(1, 39.2, 30.0, Status.CLASSIFIED, 0),
+      DBSCANPoint(2, 40.8, 30.0, Status.CLASSIFIED, 0)
     )
   }
 
@@ -158,7 +172,7 @@ class DBSCANTest extends FlatSpec with Matchers {
         case Array(id, x, y) => DBSCANPoint(id.toInt, x.toDouble, y.toDouble)
       }
     }).toArray
-    val clusters = DBSCAN(2, 3).cluster(points)
+    val clusters = DBSCAN(2, 3).clusters(points)
     clusters.head should contain theSameElementsAs points
   }
 

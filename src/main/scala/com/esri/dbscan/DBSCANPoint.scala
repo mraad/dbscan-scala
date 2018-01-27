@@ -13,6 +13,7 @@ class DBSCANPoint(val id: Int, val x: Double, val y: Double, var flag: Status = 
     dx * dx + dy * dy
   }
 
+  @deprecated
   def updateClusterID(index: Int): DBSCANPoint = {
     clusterID = index
     this

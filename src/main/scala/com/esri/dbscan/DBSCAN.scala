@@ -1,45 +1,50 @@
 package com.esri.dbscan
 
 import scala.collection.mutable
-import scala.collection.mutable.ArrayBuffer
 import scala.collection.parallel.ParMap
 
 class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
-  // val eps2 = eps * eps
-
-  def clusterWithID(points: Iterable[DBSCANPoint]): Iterable[DBSCANPoint] = {
-    cluster(points)
-      .zipWithIndex
-      .flatMap {
-        case (iter, clusterID) => {
-          iter.map(_.updateClusterID(clusterID))
-        }
-      }
-  }
-
-  def cluster(points: Iterable[DBSCANPoint]): Iterable[Seq[DBSCANPoint]] = {
-
+  /**
+    * Cluster the points and update each point status ans clusterID.
+    *
+    * @param points the points to cluster.
+    * @return the points with updated status and clusterID variables. // TODO - Make this immutable.
+    */
+  def cluster(points: Iterable[DBSCANPoint]): Iterable[DBSCANPoint] = {
+    // Pre calculate the neighbors of a point
     val neighborhood = calcNeighborhood(points)
-
-    points.flatMap(point => {
+    var clusterID = 0
+    points.foreach(point => {
       if (point.flag == Status.UNCLASSIFIED) {
         val neighbors = neighborhood(point)
         if (neighbors.length < minPoints) {
           point.flag = Status.NOISE
-          None
         } else {
-          point.flag = Status.CLASSIFIED
-          expand(point, neighbors, neighborhood)
+          clusterID = expand(point, neighbors, neighborhood, clusterID)
         }
       }
       else {
         None
       }
     })
+    points
   }
 
-  def calcNeighborhood(points: Iterable[DBSCANPoint]): ParMap[DBSCANPoint, Seq[DBSCANPoint]] = {
+  /**
+    * Cluster the points and return only the points that formed a cluster.
+    *
+    * @param points the input point to cluster.
+    * @return the clusters and their associated points.
+    */
+  def clusters(points: Iterable[DBSCANPoint]): Iterable[Iterable[DBSCANPoint]] = {
+    cluster(points)
+      .groupBy(_.clusterID)
+      .filterKeys(_ > -1)
+      .values
+  }
+
+  private def calcNeighborhood(points: Iterable[DBSCANPoint]): ParMap[DBSCANPoint, Seq[DBSCANPoint]] = {
     val si = points.foldLeft(SpatialIndex(eps))(_ + _)
     points
       .par
@@ -47,75 +52,45 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
       .toMap
   }
 
-  /*
-  def calcNeighborhood(points: Iterable[DBSCANPoint]): ParMap[DBSCANPoint, Array[DBSCANPoint]] = {
-
-    val (xmin, ymin, xmax, ymax) = points
-      .par
-      .foldLeft(
-        (Double.PositiveInfinity, Double.PositiveInfinity, Double.NegativeInfinity, Double.NegativeInfinity)) {
-        case ((xmin, ymin, xmax, ymax), point) => {
-          (xmin min point.x, ymin min point.y, xmax max point.x, ymax max point.y)
-        }
-      }
-
-    val qt = new QuadTree(new Envelope2D(xmin, ymin, xmax, ymax), 16)
-    val index2Point = points.zipWithIndex.map {
-      case (point, index) => {
-        qt.insert(index, new Envelope2D(point.x, point.y, point.x, point.y)) -> point
-      }
-    }.toMap
-
-    points
-      .par
-      .map(p => {
-        val arr = new ArrayBuffer[DBSCANPoint]()
-        val xmin = p.x - eps
-        val ymin = p.y - eps
-        val xmax = p.x + eps
-        val ymax = p.y + eps
-        val iterator = qt.getIterator(new Envelope2D(xmin, ymin, xmax, ymax), 0.0000001)
-        var index = iterator.next
-        while (index != -1) {
-          val q = index2Point(index)
-          if ((p distance2 q) < eps2) {
-            arr += q
-          }
-          index = iterator.next
-        }
-        p -> arr.toArray
-      }).toMap
-  }
-  */
-
-  def expand(point: DBSCANPoint,
-             neighbors: Seq[DBSCANPoint],
-             neighborhood: ParMap[DBSCANPoint, Seq[DBSCANPoint]]
-            ): Option[Seq[DBSCANPoint]] = {
-    val cluster = new ArrayBuffer[DBSCANPoint]()
-    cluster += point
+  private def expand(point: DBSCANPoint,
+                     neighbors: Seq[DBSCANPoint],
+                     neighborhood: ParMap[DBSCANPoint, Seq[DBSCANPoint]],
+                     clusterID: Int
+                    ): Int = {
+    point.flag = Status.CLASSIFIED
+    point.clusterID = clusterID
     val queue = new mutable.Queue[DBSCANPoint]()
     queue ++= neighbors
     while (queue.nonEmpty) {
       val neighbor = queue.dequeue
       if (neighbor.flag == Status.NOISE) {
         neighbor.flag = Status.CLASSIFIED
-        cluster += neighbor
+        neighbor.clusterID = clusterID
       }
       else if (neighbor.flag == Status.UNCLASSIFIED) {
         neighbor.flag = Status.CLASSIFIED
-        cluster += neighbor
+        neighbor.clusterID = clusterID
         val neighborNeighbors = neighborhood(neighbor)
         if (neighborNeighbors.length >= minPoints) {
           queue ++= neighborNeighbors
         }
       }
     }
-    Some(cluster)
+    clusterID + 1
   }
 }
 
+/**
+  * Companion object.
+  */
 object DBSCAN extends Serializable {
+  /**
+    * Create a DBSCAN instance.
+    *
+    * @param eps       the search distance.
+    * @param minPoints the min number of points in the search distance to start or append to a cluster.
+    * @return a DBSCAN instance.
+    */
   def apply(eps: Double, minPoints: Int) = {
     new DBSCAN(eps, minPoints)
   }
