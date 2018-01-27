@@ -5,7 +5,7 @@ import com.esri.smear.Smear
 
 /**
   */
-class DBSCANPoint(val id: Int, val x: Double, val y: Double, var flag: Status = Status.UNCLASSIFIED, var clusterID: Int = -1) extends Serializable {
+class DBSCANPoint(val id: Long, val x: Double, val y: Double, var flag: Status = Status.UNCLASSIFIED, var clusterID: Int = -1) extends Serializable {
 
   def distance2(that: DBSCANPoint): Double = {
     val dx = that.x - this.x
@@ -25,18 +25,18 @@ class DBSCANPoint(val id: Int, val x: Double, val y: Double, var flag: Status = 
   }
 
   override def hashCode(): Int = {
-    Smear.smear(id)
+    Smear.smear(id.toInt)
   }
 
   override def toString(): String = s"DBSCANPoint($id,$x,$y,$flag,$clusterID)"
 }
 
 object DBSCANPoint extends Serializable {
-  def apply(id: Int, x: Double, y: Double): DBSCANPoint = {
+  def apply(id: Long, x: Double, y: Double): DBSCANPoint = {
     new DBSCANPoint(id, x, y)
   }
 
-  def apply(id: Int, x: Double, y: Double, flag: Status.Value, clusterID: Int): DBSCANPoint = {
+  def apply(id: Long, x: Double, y: Double, flag: Status.Value, clusterID: Int): DBSCANPoint = {
     new DBSCANPoint(id, x, y, flag, clusterID)
   }
 }

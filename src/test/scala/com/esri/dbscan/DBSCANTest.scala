@@ -46,7 +46,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       .getLines()
       .map(line => {
         val splits = line.split(' ')
-        DBSCANPoint(splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
+        DBSCANPoint(splits(0).toLong, splits(1).toDouble, splits(2).toDouble)
       }).toIterable
 
     val results = Source
@@ -55,7 +55,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       .flatMap(line => {
         val splits = line.split(',')
         val clusterID = splits.head.toInt
-        splits.tail.map(_.toInt -> clusterID)
+        splits.tail.map(_.toLong -> clusterID)
       }).toMap
 
     DBSCAN(4, 6)
@@ -74,7 +74,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       .getLines()
       .map(line => {
         val splits = line.split(' ')
-        DBSCANPoint(splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
+        DBSCANPoint(splits(0).toLong, splits(1).toDouble, splits(2).toDouble)
       }).toArray
 
     val results = Source.fromURL(getClass.getResource("/res_4_10_20_20.txt"))
@@ -82,7 +82,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       .flatMap(line => {
         val splits = line.split(',')
         val clusterID = splits.head.toInt
-        splits.tail.map(_.toInt -> clusterID)
+        splits.tail.map(_.toLong -> clusterID)
       }).toMap
 
     DBSCAN(4, 10)
@@ -169,7 +169,7 @@ class DBSCANTest extends FlatSpec with Matchers {
   it should "test Eric's use case " in {
     val points = Source.fromURL(getClass.getResource("/eric.txt")).getLines().map(line => {
       line.split(' ') match {
-        case Array(id, x, y) => DBSCANPoint(id.toInt, x.toDouble, y.toDouble)
+        case Array(id, x, y) => DBSCANPoint(id.toLong, x.toDouble, y.toDouble)
       }
     }).toArray
     val clusters = DBSCAN(2, 3).clusters(points)
