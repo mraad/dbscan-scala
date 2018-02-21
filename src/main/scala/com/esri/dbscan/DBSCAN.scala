@@ -24,9 +24,6 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
           clusterID = expand(point, neighbors, neighborhood, clusterID)
         }
       }
-      //      else {
-      //        None
-      //      }
     })
     points
   }
