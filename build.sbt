@@ -12,7 +12,7 @@ crossScalaVersions := Seq("2.10.6", "2.11.8")
 
 resolvers += Resolver.mavenLocal
 
-libraryDependencies += "com.esri" %% "euclid" % "0.1"
+libraryDependencies += "com.esri" %% "euclid" % "0.2"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 pomExtra :=
