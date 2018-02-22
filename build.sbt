@@ -2,7 +2,7 @@ organization := "com.esri"
 
 name := "dbscan-scala"
 
-version := "0.17"
+version := "0.19"
 
 isSnapshot := true
 

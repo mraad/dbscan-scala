@@ -3,6 +3,12 @@ package com.esri.dbscan
 import scala.collection.mutable
 import scala.collection.parallel.ParMap
 
+/**
+  * Density Based Clusterer.
+  *
+  * @param eps       the search distance to form a cluster.
+  * @param minPoints the min number of points in a cluster.
+  */
 class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
 
   /**
@@ -39,6 +45,28 @@ class DBSCAN(eps: Double, minPoints: Int) extends Serializable {
       .groupBy(_.clusterID)
       .filterKeys(_ > -1)
       .values
+  }
+
+  /**
+    * Cluster the points and return Cluster instances.
+    *
+    * @param points             Input points to cluster.
+    * @param returnNoiseCluster Should it return a cluster with the "noise" points (cluster id -1). False by default.
+    * @return iterable of Cluster instances.
+    */
+  def dbscan(points: Iterable[DBSCANPoint], returnNoiseCluster: Boolean = false): Iterable[Cluster] = {
+    val group = cluster(points).groupBy(_.clusterID)
+    if (returnNoiseCluster)
+      group
+        .map {
+          case (id, points) => Cluster(id, points)
+        }
+    else
+      group
+        .filterKeys(_ > -1)
+        .map {
+          case (id, points) => Cluster(id, points)
+        }
   }
 
   private def calcNeighborhood(points: Iterable[DBSCANPoint]): ParMap[DBSCANPoint, Seq[DBSCANPoint]] = {
