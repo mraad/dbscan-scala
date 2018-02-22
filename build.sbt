@@ -2,7 +2,7 @@ organization := "com.esri"
 
 name := "dbscan-scala"
 
-version := "0.19"
+version := "0.20"
 
 isSnapshot := true
 
@@ -12,6 +12,7 @@ crossScalaVersions := Seq("2.10.6", "2.11.8")
 
 resolvers += Resolver.mavenLocal
 
+libraryDependencies += "com.esri" %% "euclid" % "0.1"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.1" % "test"
 
 pomExtra :=

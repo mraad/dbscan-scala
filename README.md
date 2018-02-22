@@ -4,6 +4,8 @@
 
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
+*2018-02-22*: Project now depends on [Euclid](https://github.com/mraad/euclid).
+
 ### Comparing to Commons Math
 
 Wanted to make sure my implementation was "correct", so I compared it with [Commons Math](https://commons.apache.org/proper/commons-math/).
@@ -57,7 +59,8 @@ mvn release:perform
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.15</version>
+    <version>0.20</version>
+    <classifier>2.10<classifier/
 </dependency>
 ```
 

@@ -1,12 +1,14 @@
 package com.esri.dbscan
 
 import com.esri.dbscan.Status.Status
+import com.esri.euclid.Euclid
 import com.esri.smear.Smear
 
 /**
   */
-class DBSCANPoint(val id: Long, val x: Double, val y: Double, var flag: Status = Status.UNCLASSIFIED, var clusterID: Int = -1) extends Serializable {
+class DBSCANPoint(val id: Long, val x: Double, val y: Double, var flag: Status = Status.UNCLASSIFIED, var clusterID: Int = -1) extends Euclid {
 
+  @deprecated("Use Euclid.distSqr")
   def distance2(that: DBSCANPoint): Double = {
     val dx = that.x - this.x
     val dy = that.y - this.y
