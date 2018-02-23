@@ -1,7 +1,10 @@
 package com.esri.dbscan
 
 /**
-  * Status of a DBSCANPoint.
+  * Assignment status of a DBSCANPoint.
+  * UNCLASSIFIED -> Initial state
+  * CLASSIFIED -> Assigned to a cluster
+  * NOISE -> Noise.
   */
 object Status extends Enumeration {
   type Status = Status.Value
