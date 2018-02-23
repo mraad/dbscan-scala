@@ -5,3 +5,4 @@ metastore_db/
 pom.xml.releaseBackup
 release.properties
 *.iml
+*.sh

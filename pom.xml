@@ -54,7 +54,7 @@
         <dependency>
             <groupId>com.esri</groupId>
             <artifactId>euclid</artifactId>
-            <version>0.2</version>
+            <version>0.3</version>
             <classifier>${scala.compact}</classifier>
         </dependency>
         <dependency>
