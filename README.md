@@ -61,7 +61,7 @@ Scala 2.10 dependency:
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.22</version>
+    <version>0.24</version>
     <classifier>2.10<classifier/
 </dependency>
 ```
@@ -72,7 +72,7 @@ Scala 2.11 dependency:
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.22</version>
+    <version>0.24</version>
     <classifier>2.11<classifier/
 </dependency>
 ```
