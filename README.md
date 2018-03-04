@@ -73,10 +73,10 @@ mvn release:perform
 
 ### References
 
-* <http://people.cs.nctu.edu.tw/~rsliang/dbscan/testdatagen.html>
-* <https://help.github.com/articles/generating-ssh-keys/>
-* <http://veithen.github.io/2013/05/26/github-bintray-maven-release-plugin.html>
-* <http://www.sciweavers.org/free-online-latex-equation-editor>
-* <http://blog.dominodatalab.com/topology-and-density-based-clustering/>
-* <https://en.wikipedia.org/wiki/OPTICS_algorithm>
-* <http://www.naftaliharris.com/blog/visualizing-dbscan-clustering/>
+* http://people.cs.nctu.edu.tw/~rsliang/dbscan/testdatagen.html
+* https://help.github.com/articles/generating-ssh-keys/
+* http://veithen.github.io/2013/05/26/github-bintray-maven-release-plugin.html
+* http://www.sciweavers.org/free-online-latex-equation-editor
+* http://blog.dominodatalab.com/topology-and-density-based-clustering/
+* https://en.wikipedia.org/wiki/OPTICS_algorithm
+* http://www.naftaliharris.com/blog/visualizing-dbscan-clustering/
