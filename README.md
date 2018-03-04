@@ -28,7 +28,7 @@ And the test code still passes!
 
 ### Boundary Conditions
 
-The concept of neighborhood is implemented as ![](media/eqn_1.png), where ![](media/eqn_2.png) is the euclidean distance between two points.
+    The concept of neighborhood is implemented as d<sub>i</sub><sup>2</sup> &#8804; &epsilon;<sup>2</sup>, where d<sub>i</sub> is the euclidean distance between two points.
 
 ## Publish to [Bintray](https://bintray.com/mraad/maven/dbscan-scala/view)
 
@@ -55,12 +55,25 @@ mvn release:perform
 </repositories>
 ```
 
+Scala 2.10 dependency:
+
 ```xml
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.20</version>
+    <version>0.22</version>
     <classifier>2.10<classifier/
+</dependency>
+```
+
+Scala 2.11 dependency:
+
+```xml
+<dependency>
+    <groupId>com.esri</groupId>
+    <artifactId>dbscan-scala</artifactId>
+    <version>0.22</version>
+    <classifier>2.11<classifier/
 </dependency>
 ```
 
