@@ -1,5 +1,7 @@
 package com.esri.dbscan
 
+import com.esri.euclid.Euclid
+
 import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
@@ -9,10 +11,10 @@ import scala.collection.mutable.ArrayBuffer
   *
   * @param eps the cell size.
   */
-case class SpatialIndex(eps: Double) {
+case class SpatialIndex[T <: Euclid](eps: Double) {
 
   type SIKey = (Long, Long)
-  type SIVal = mutable.ArrayBuffer[DBSCANPoint]
+  type SIVal = mutable.ArrayBuffer[T]
 
   val grid = mutable.Map[SIKey, SIVal]()
   val eps2 = eps * eps
@@ -23,10 +25,10 @@ case class SpatialIndex(eps: Double) {
     * @param point the point to index.
     * @return this spatial index.
     */
-  def +(point: DBSCANPoint): SpatialIndex = {
+  def +(point: T): SpatialIndex[T] = {
     val c = (point.x / eps).floor.toLong
     val r = (point.y / eps).floor.toLong
-    grid.getOrElseUpdate((r, c), ArrayBuffer[DBSCANPoint]()) += point
+    grid.getOrElseUpdate((r, c), ArrayBuffer[T]()) += point
     this
   }
 
@@ -38,7 +40,7 @@ case class SpatialIndex(eps: Double) {
     * @param point the point to search around.
     * @return a sequence of points that are in the neighborhood of the supplied point.
     */
-  def findNeighbors(point: DBSCANPoint): Seq[DBSCANPoint] = {
+  def findNeighbors(point: T): Seq[T] = {
     val c = (point.x / eps).floor.toLong
     val r = (point.y / eps).floor.toLong
 
@@ -61,7 +63,7 @@ case class SpatialIndex(eps: Double) {
     * @param point the center point.
     * @return a sequence of points that are in the neighborhood of the supplied point.
     */
-  def findNeighbors2(point: DBSCANPoint): Seq[DBSCANPoint] = {
+  def findNeighbors2(point: T): Seq[T] = {
     val c = (point.x / eps).floor.toLong
     val r = (point.y / eps).floor.toLong
 

@@ -6,4 +6,4 @@ package com.esri.dbscan
   * @param id     the cluster id.
   * @param points the points making up the cluster.
   */
-case class Cluster(id: Int, points: Iterable[DBSCANPoint])
+case class Cluster[T <: DBSCANPoint](id: Int, points: Iterable[T])

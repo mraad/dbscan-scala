@@ -4,6 +4,7 @@
 
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
+*2018-03-04*: Revamped the implementation to make DBSCANPoint an immutable trait.
 *2018-02-22*: Project now depends on [Euclid](https://github.com/mraad/euclid).
 
 ### Comparing to Commons Math
@@ -59,7 +60,7 @@ Scala 2.10 dependency:
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.21</version>
+    <version>0.22</version>
     <classifier>2.10<classifier/
 </dependency>
 ```
@@ -70,17 +71,17 @@ Scala 2.11 dependency:
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.21</version>
+    <version>0.22</version>
     <classifier>2.11<classifier/
 </dependency>
 ```
 
 ### TODO
 
-- ~~Remove dependency on [Esri Geometry API](https://github.com/Esri/geometry-api-java)~~
-- Make DBSCANPoint immutable and return ClusteredPoint
-- Make DBSCANPoint multi-dimensional
 - Implement weighted clustering.
+- Make DBSCANPoint multi-dimensional.
+- ~~Make DBSCANPoint immutable and return ClusteredPoint.~~
+- ~~Remove dependency on [Esri Geometry API](https://github.com/Esri/geometry-api-java).~~
 
 ### References
 

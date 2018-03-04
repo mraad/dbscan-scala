@@ -6,127 +6,78 @@ import scala.io.Source
 
 class DBSCANTest extends FlatSpec with Matchers {
 
+  case class TestPoint(id: Long, x: Double, y: Double) extends DBSCANPoint
+
   it should "cluster" in {
     val points = Array(
-      DBSCANPoint(0, 9, 9),
-      DBSCANPoint(1, 11, 9)
+      TestPoint(0, 9, 9),
+      TestPoint(1, 11, 9)
     )
 
-    val clusters = DBSCAN(3, 2)
-      .clusters(points)
-      .toList
+    val clusters = DBSCAN(3, 2).cluster(points)
 
-    clusters.length shouldBe 1
+    clusters.size shouldBe 1
   }
 
   it should "find one cluster" in {
     val points = Array(
-      DBSCANPoint(0, 0, 0),
-      DBSCANPoint(1, 0, 2),
-      DBSCANPoint(2, 0, 4),
-      DBSCANPoint(3, 0, 6),
-      DBSCANPoint(4, 0, 8),
-      DBSCANPoint(5, 3, 0)
+      TestPoint(0, 0, 0),
+      TestPoint(1, 0, 2),
+      TestPoint(2, 0, 4),
+      TestPoint(3, 0, 6),
+      TestPoint(4, 0, 8),
+      TestPoint(5, 3, 0)
     )
     val clusters = DBSCAN(2.5, 2).clusters(points).toList
 
     clusters.length shouldBe 1
-    clusters(0) should contain only(points(0), points(1), points(2), points(3), points(4))
+    clusters.head.points should contain only(points(0), points(1), points(2), points(3), points(4))
 
-    points(5).flag shouldBe Status.NOISE
+    // points(5).flag shouldBe Status.NOISE
+  }
+
+  private def doDatRes(dat: String, res: String, eps: Double, minPoints: Int, noise: Int) = {
+    val points = Source
+      .fromURL(getClass.getResource(dat))
+      .getLines()
+      .map(line => {
+        val splits = line.split(' ')
+        TestPoint(splits(0).toLong, splits(1).toDouble, splits(2).toDouble)
+      }).toIterable
+
+    val results = Source
+      .fromURL(getClass.getResource(res))
+      .getLines()
+      .flatMap(line => {
+        val splits = line.split(',')
+        val clusterID = splits.head.toInt - 1
+        splits.tail.map(_.toLong -> clusterID)
+      }).toMap
+
+    val clusters = DBSCAN(eps, minPoints).cluster(points)
+
+    clusters
+      .filter(_.id == -1)
+      .head.points.size shouldBe noise
+
+    clusters
+      .foreach(cluster => {
+        cluster.points.foreach(point => {
+          results.getOrElse(point.id, -1) shouldBe cluster.id
+        })
+      })
   }
 
   /**
     * http://people.cs.nctu.edu.tw/~rsliang/dbscan/testdatagen.html
     */
   it should "have 6 clusters and 20 outliers" in {
-
-    val points = Source
-      .fromURL(getClass.getResource("/dat_4_6_6_20.txt"))
-      .getLines()
-      .map(line => {
-        val splits = line.split(' ')
-        DBSCANPoint(splits(0).toLong, splits(1).toDouble, splits(2).toDouble)
-      }).toIterable
-
-    val results = Source
-      .fromURL(getClass.getResource("/res_4_6_6_20.txt"))
-      .getLines()
-      .flatMap(line => {
-        val splits = line.split(',')
-        val clusterID = splits.head.toInt
-        splits.tail.map(_.toLong -> clusterID)
-      }).toMap
-
-    DBSCAN(4, 6)
-      .cluster(points)
-      .foreach(point => {
-        point.clusterID + 1 shouldBe results.getOrElse(point.id, 0)
-      })
-
-    points.filter(_.flag == Status.NOISE).size shouldBe 20
+    doDatRes("/dat_4_6_6_20.txt", "/res_4_6_6_20.txt", 4, 6, 20)
   }
 
   it should "have 20 clusters and 20 outliers" in {
-
-    val points = Source
-      .fromURL(getClass.getResource("/dat_4_10_20_20.txt"))
-      .getLines()
-      .map(line => {
-        val splits = line.split(' ')
-        DBSCANPoint(splits(0).toLong, splits(1).toDouble, splits(2).toDouble)
-      }).toArray
-
-    val results = Source.fromURL(getClass.getResource("/res_4_10_20_20.txt"))
-      .getLines()
-      .flatMap(line => {
-        val splits = line.split(',')
-        val clusterID = splits.head.toInt
-        splits.tail.map(_.toLong -> clusterID)
-      }).toMap
-
-    DBSCAN(4, 10)
-      .cluster(points)
-      .foreach(point => {
-        point.clusterID + 1 shouldBe results.getOrElse(point.id, 0)
-      })
-
-    points.filter(_.flag == Status.NOISE).size shouldBe 20
+    doDatRes("/dat_4_10_20_20.txt", "/res_4_10_20_20.txt", 4, 10, 20)
   }
-
-  /*
-    case class ClusterablePoint(id: Int, x: Double, y: Double) extends Clusterable {
-      override val getPoint: Array[Double] = Array(x, y)
-    }
-
-    it should "match commons math" in {
-      val smiley = Source.fromURL(getClass.getResource("/smiley1.txt")).getLines().map(line => {
-        val splits = line.split(' ')
-        (splits(0).toInt, splits(1).toDouble, splits(2).toDouble)
-      }).toSeq
-
-      val orig = smiley.map { case (id, x, y) => DBSCANPoint(id, x, y) }
-
-      val dest = smiley.map { case (id, x, y) => ClusterablePoint(id, x, y) }
-
-      val origRes = DBSCAN(200000, 10).cluster(orig).toSeq
-
-      val destRes = new DBSCANClusterer[ClusterablePoint](200000, 10).cluster(dest)
-
-      origRes.length shouldBe destRes.length
-
-      origRes.zipWithIndex.foreach {
-        case (points, i) => {
-          val cluster = destRes.get(i).getPoints
-          points.zipWithIndex.foreach {
-            case (point, j) => {
-              cluster.exists(_.id == point.id) shouldBe true
-            }
-          }
-        }
-      }
-    }
-  */
 
   it should "test Randall's 3 points" in {
     /*
@@ -135,16 +86,12 @@ class DBSCANTest extends FlatSpec with Matchers {
       2 30 30.5
      */
     val points = Array(
-      DBSCANPoint(0, 29.5, 29.5),
-      DBSCANPoint(1, 30.5, 29.5),
-      DBSCANPoint(2, 30.0, 30.5)
+      TestPoint(0, 29.5, 29.5),
+      TestPoint(1, 30.5, 29.5),
+      TestPoint(2, 30.0, 30.5)
     )
-    val iterable = DBSCAN(2.0, 3).cluster(points)
-    iterable should contain theSameElementsAs Seq(
-      DBSCANPoint(0, 29.5, 29.5, Status.CLASSIFIED, 0),
-      DBSCANPoint(1, 30.5, 29.5, Status.CLASSIFIED, 0),
-      DBSCANPoint(2, 30.0, 30.5, Status.CLASSIFIED, 0)
-    )
+    val clusters = DBSCAN(2.0, 3).cluster(points)
+    clusters.head.points should contain theSameElementsAs points
   }
 
   it should "test Randall's second case" in {
@@ -154,26 +101,22 @@ class DBSCANTest extends FlatSpec with Matchers {
       2 40.8 30.0
      */
     val points = Array(
-      DBSCANPoint(0, 37.6, 30.0),
-      DBSCANPoint(1, 39.2, 30.0),
-      DBSCANPoint(2, 40.8, 30.0)
+      TestPoint(0, 37.6, 30.0),
+      TestPoint(1, 39.2, 30.0),
+      TestPoint(2, 40.8, 30.0)
     )
-    val iterable = DBSCAN(2.0, 3).cluster(points)
-    iterable should contain theSameElementsAs Seq(
-      DBSCANPoint(0, 37.6, 30.0, Status.CLASSIFIED, 0),
-      DBSCANPoint(1, 39.2, 30.0, Status.CLASSIFIED, 0),
-      DBSCANPoint(2, 40.8, 30.0, Status.CLASSIFIED, 0)
-    )
+    val clusters = DBSCAN(2.0, 3).cluster(points)
+    clusters.head.points should contain theSameElementsAs points
   }
 
   it should "test Eric's use case " in {
     val points = Source.fromURL(getClass.getResource("/eric.txt")).getLines().map(line => {
       line.split(' ') match {
-        case Array(id, x, y) => DBSCANPoint(id.toLong, x.toDouble, y.toDouble)
+        case Array(id, x, y) => TestPoint(id.toLong, x.toDouble, y.toDouble)
       }
     }).toArray
     val clusters = DBSCAN(2, 3).clusters(points)
-    clusters.head should contain theSameElementsAs points
+    clusters.head.points should contain theSameElementsAs points
   }
 
 }

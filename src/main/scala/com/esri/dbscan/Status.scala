@@ -6,7 +6,7 @@ package com.esri.dbscan
   * CLASSIFIED -> Assigned to a cluster
   * NOISE -> Noise.
   */
-object Status extends Enumeration {
+private[dbscan] object Status extends Enumeration {
   type Status = Status.Value
   val UNCLASSIFIED, CLASSIFIED, NOISE = Value
 }
