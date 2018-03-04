@@ -28,7 +28,7 @@ And the test code still passes!
 
 ### Boundary Conditions
 
-    The concept of neighborhood is implemented as d<sub>i</sub><sup>2</sup> &#8804; &epsilon;<sup>2</sup>, where d<sub>i</sub> is the euclidean distance between two points.
+The concept of neighborhood is implemented as d<sub>i</sub><sup>2</sup> &le; &epsilon;<sup>2</sup>, where d<sub>i</sub> is the euclidean distance between two points.
 
 ## Publish to [Bintray](https://bintray.com/mraad/maven/dbscan-scala/view)
 
