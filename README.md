@@ -5,6 +5,7 @@
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
 *2018-03-04*: Revamped the implementation to make DBSCANPoint an immutable trait.
+
 *2018-02-22*: Project now depends on [Euclid](https://github.com/mraad/euclid).
 
 ### Comparing to Commons Math
