@@ -8,10 +8,14 @@ import scala.collection.parallel.ParMap
 /**
   * Density Based Clusterer.
   *
-  * @param eps       the search distance to form a cluster.
-  * @param minPoints the min number of points in a cluster.
+  * @param eps                 the search distance to form a cluster.
+  * @param minPoints           the min number of points in a cluster.
+  * @param minPointsCalculator optional min number of points calculator, default is MinPointsLength.
   */
-class DBSCAN[T <: DBSCANPoint](eps: Double, minPoints: Int) extends Serializable {
+class DBSCAN[T <: DBSCANPoint](eps: Double,
+                               minPoints: Int,
+                               minPointsCalculator: MinPointsCalculator[T] = new MinPointsLength[T]
+                              ) extends Serializable {
 
   private case class State(status: Status = Status.UNCLASSIFIED, clusterID: Int = -1)
 
@@ -24,7 +28,7 @@ class DBSCAN[T <: DBSCANPoint](eps: Double, minPoints: Int) extends Serializable
       val status = stateMap(elem.id).status
       if (status == Status.UNCLASSIFIED) {
         val neighbors = neighborhood(elem.id)
-        if (neighbors.length < minPoints) {
+        if (minPointsCalculator.minPoints(neighbors) < minPoints) {
           stateMap(elem.id) = State(Status.NOISE)
         } else {
           clusterID = expand(elem, neighbors, neighborhood, clusterID)
@@ -91,7 +95,7 @@ class DBSCAN[T <: DBSCANPoint](eps: Double, minPoints: Int) extends Serializable
       else if (status == Status.UNCLASSIFIED) {
         stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
         val neighborNeighbors = neighborhood(neighbor.id)
-        if (neighborNeighbors.length >= minPoints) {
+        if (minPointsCalculator.minPoints(neighborNeighbors) >= minPoints) {
           queue ++= neighborNeighbors
         }
       }
@@ -107,11 +111,15 @@ object DBSCAN extends Serializable {
   /**
     * Create a DBSCAN instance.
     *
-    * @param eps       the search distance.
-    * @param minPoints the min number of points in the search distance to start or append to a cluster.
+    * @param eps                 the search distance.
+    * @param minPoints           the min number of points in the search distance to start or append to a cluster.
+    * @param minPointsCalculator optional min number of points calculator, default is MinPointsLength.
     * @return a DBSCAN instance.
     */
-  def apply[T <: DBSCANPoint](eps: Double, minPoints: Int): DBSCAN[T] = {
-    new DBSCAN[T](eps, minPoints)
+  def apply[T <: DBSCANPoint](eps: Double,
+                              minPoints: Int,
+                              minPointsCalculator: MinPointsCalculator[T] = new MinPointsLength[T]
+                             ): DBSCAN[T] = {
+    new DBSCAN[T](eps, minPoints, minPointsCalculator)
   }
 }

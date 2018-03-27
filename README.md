@@ -4,6 +4,8 @@
 
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
+*2018-03-27*: Added `MinPointsCalculator` trait and default `MinPointsLength` implementation. This enables the implementation of a weighted `DBSCANPoint` implementation, where the min points to form a cluster can be calculated based on the sum of the weighted points.
+
 *2018-03-04*: Revamped the implementation to make DBSCANPoint an immutable trait.
 
 *2018-02-22*: Project now depends on [Euclid](https://github.com/mraad/euclid).
@@ -79,8 +81,8 @@ Scala 2.11 dependency:
 
 ### TODO
 
-- Implement weighted clustering.
 - Make DBSCANPoint multi-dimensional.
+- ~~Implement weighted clustering.~~
 - ~~Make DBSCANPoint immutable and return ClusteredPoint.~~
 - ~~Remove dependency on [Esri Geometry API](https://github.com/Esri/geometry-api-java).~~
 
