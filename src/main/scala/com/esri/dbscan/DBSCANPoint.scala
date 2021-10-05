@@ -5,7 +5,7 @@ package com.esri.dbscan
  */
 trait DBSCANPoint extends Serializable {
   /**
-   * @return point identifier.
+   * @return unique point identifier.
    */
   def id: Long
 }

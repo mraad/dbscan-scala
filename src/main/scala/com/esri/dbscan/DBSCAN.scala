@@ -20,6 +20,30 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
 
   private val stateMap = mutable.Map.empty[Long, State].withDefaultValue(State())
 
+  private def _expand(elem: T,
+                      neighbors: Seq[T],
+                      clusterID: Int
+                     ): Int = {
+    stateMap(elem.id) = State(Status.CLASSIFIED, clusterID)
+    val queue = new mutable.Queue[T]()
+    queue ++= neighbors
+    while (queue.nonEmpty) {
+      val neighbor = queue.dequeue
+      val status = stateMap(neighbor.id).status
+      if (status == Status.NOISE) {
+        stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
+      }
+      else if (status == Status.UNCLASSIFIED) {
+        stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
+        val neighborNeighbors = nnSearch.neighborsOf(neighbor)
+        if (neighborNeighbors.size >= minPoints) {
+          queue ++= neighborNeighbors
+        }
+      }
+    }
+    clusterID + 1
+  }
+
   private def _dbscan(iter: Iterable[T]): Iterable[T] = {
     var clusterID = 0
     iter.map(elem => {
@@ -29,7 +53,7 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
         if (neighbors.size < minPoints) {
           stateMap(elem.id) = State(Status.NOISE)
         } else {
-          clusterID = expand(elem, neighbors, clusterID)
+          clusterID = _expand(elem, neighbors, clusterID)
         }
       }
       elem
@@ -78,37 +102,6 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
       }
   }
 
-  //  private def calcNeighborhood(points: Iterable[T]): ParMap[Long, Seq[T]] = {
-  //    val si = points.foldLeft(SpatialIndex[T](eps))(_ + _)
-  //    points
-  //      .par
-  //      .map(p => p.id -> (si findNeighbors p))
-  //      .toMap
-  //  }
-
-  private def expand(elem: T,
-                     neighbors: Seq[T],
-                     clusterID: Int
-                    ): Int = {
-    stateMap(elem.id) = State(Status.CLASSIFIED, clusterID)
-    val queue = new mutable.Queue[T]()
-    queue ++= neighbors
-    while (queue.nonEmpty) {
-      val neighbor = queue.dequeue
-      val status = stateMap(neighbor.id).status
-      if (status == Status.NOISE) {
-        stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
-      }
-      else if (status == Status.UNCLASSIFIED) {
-        stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
-        val neighborNeighbors = nnSearch.neighborsOf(neighbor)
-        if (neighborNeighbors.size >= minPoints) {
-          queue ++= neighborNeighbors
-        }
-      }
-    }
-    clusterID + 1
-  }
 }
 
 /**
