@@ -5,11 +5,11 @@ import scala.collection.mutable.ArrayBuffer
 
 /**
  * Spatial index to quickly locate neighbors of a point.
- * The implementation is based on a grid, where all the indexed points are grouped together based on the cell in the grid that they fall into.
+ * The implementation is based on a simple grid, where all the indexed points are grouped together based on the cell in the grid that they fall into.
  *
  * @param eps the cell size.
  */
-case class SpatialIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
+case class DBSCANIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
 
   type SIKey = (Long, Long)
   type SIVal = mutable.ArrayBuffer[T]
@@ -23,7 +23,7 @@ case class SpatialIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
    * @param point the point to index.
    * @return this spatial index.
    */
-  def +(point: T): SpatialIndex[T] = {
+  def +(point: T): DBSCANIndex[T] = {
     val c = (point.x / eps).floor.toLong
     val r = (point.y / eps).floor.toLong
     grid.getOrElseUpdate((r, c), ArrayBuffer[T]()) += point

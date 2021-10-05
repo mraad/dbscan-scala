@@ -4,7 +4,7 @@ import org.scalatest.{FlatSpec, Matchers}
 
 /**
  */
-class SpatialIndexTest extends FlatSpec with Matchers {
+class DBSCANIndexTest extends FlatSpec with Matchers {
 
   case class TestPoint(id: Long, x: Double, y: Double) extends DBSCANPoint2D
 
@@ -16,7 +16,7 @@ class SpatialIndexTest extends FlatSpec with Matchers {
       TestPoint(4, 1, 1),
       TestPoint(5, 9, 9)
     )
-    val si = arr.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val si = arr.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
     val result = si.findNeighbors(TestPoint(0, 5.5, 5.5))
     result.length shouldBe 3
     result should contain allOf(arr(0), arr(1), arr(2))
@@ -27,7 +27,7 @@ class SpatialIndexTest extends FlatSpec with Matchers {
       TestPoint(1, 1, 1),
       TestPoint(2, 9, 9)
     )
-    val si = arr.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val si = arr.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
     si.findNeighbors(TestPoint(0, 5.5, 5.5)) shouldBe empty
   }
 }

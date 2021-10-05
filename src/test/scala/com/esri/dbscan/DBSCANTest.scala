@@ -14,7 +14,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(1, 11, 9)
     )
 
-    val si = points.foldLeft(SpatialIndex[TestPoint](3.0))(_ + _)
+    val si = points.foldLeft(DBSCANIndex[TestPoint](3.0))(_ + _)
     val clusters = DBSCAN(3.0, 2, si).cluster(points)
 
     clusters.size shouldBe 1
@@ -29,7 +29,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(4, 0, 8),
       TestPoint(5, 3, 0)
     )
-    val si = points.foldLeft(SpatialIndex[TestPoint](2.5))(_ + _)
+    val si = points.foldLeft(DBSCANIndex[TestPoint](2.5))(_ + _)
     val clusters = DBSCAN(2.5, 2, si).clusters(points).toList
 
     clusters.length shouldBe 1
@@ -56,7 +56,7 @@ class DBSCANTest extends FlatSpec with Matchers {
         splits.tail.map(_.toLong -> clusterID)
       }).toMap
 
-    val si = points.foldLeft(SpatialIndex[TestPoint](eps))(_ + _)
+    val si = points.foldLeft(DBSCANIndex[TestPoint](eps))(_ + _)
     val clusters = DBSCAN(eps, minPoints, si).cluster(points)
 
     clusters
@@ -93,7 +93,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(1, 30.5, 29.5),
       TestPoint(2, 30.0, 30.5)
     )
-    val si = points.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val si = points.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
     val clusters = DBSCAN(2.0, 3, si).cluster(points)
     clusters.head.points should contain theSameElementsAs points
   }
@@ -109,7 +109,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(1, 39.2, 30.0),
       TestPoint(2, 40.8, 30.0)
     )
-    val si = points.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val si = points.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
     val clusters = DBSCAN(2.0, 3, si).cluster(points)
     clusters.head.points should contain theSameElementsAs points
   }
@@ -120,7 +120,7 @@ class DBSCANTest extends FlatSpec with Matchers {
         case Array(id, x, y) => TestPoint(id.toLong, x.toDouble, y.toDouble)
       }
     }).toArray
-    val si = points.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val si = points.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
     val clusters = DBSCAN(2.0, 3, si).clusters(points)
     clusters.head.points should contain theSameElementsAs points
   }
