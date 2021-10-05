@@ -24,10 +24,22 @@ case class DBSCANIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
    * @return this spatial index.
    */
   def +(point: T): DBSCANIndex[T] = {
+    //    val c = (point.x / eps).floor.toLong
+    //    val r = (point.y / eps).floor.toLong
+    //    grid.getOrElseUpdate((r, c), ArrayBuffer[T]()) += point
+    this.append(point)
+    this
+  }
+
+  /**
+   * Append a DBSCANPoint2D instance.
+   *
+   * @param point the DBSCANPoint2D instance to append.
+   */
+  def append(point: T): Unit = {
     val c = (point.x / eps).floor.toLong
     val r = (point.y / eps).floor.toLong
     grid.getOrElseUpdate((r, c), ArrayBuffer[T]()) += point
-    this
   }
 
   /**
