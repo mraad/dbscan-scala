@@ -6,7 +6,7 @@ import scala.io.Source
 
 class DBSCANTest extends FlatSpec with Matchers {
 
-  case class TestPoint(id: Long, x: Double, y: Double) extends DBSCANPoint
+  case class TestPoint(id: Long, x: Double, y: Double) extends DBSCANPoint2D
 
   it should "cluster" in {
     val points = Array(
@@ -14,7 +14,8 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(1, 11, 9)
     )
 
-    val clusters = DBSCAN(3, 2).cluster(points)
+    val si = points.foldLeft(SpatialIndex[TestPoint](3.0))(_ + _)
+    val clusters = DBSCAN(3.0, 2, si).cluster(points)
 
     clusters.size shouldBe 1
   }
@@ -28,7 +29,8 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(4, 0, 8),
       TestPoint(5, 3, 0)
     )
-    val clusters = DBSCAN(2.5, 2).clusters(points).toList
+    val si = points.foldLeft(SpatialIndex[TestPoint](2.5))(_ + _)
+    val clusters = DBSCAN(2.5, 2, si).clusters(points).toList
 
     clusters.length shouldBe 1
     clusters.head.points should contain only(points(0), points(1), points(2), points(3), points(4))
@@ -54,7 +56,8 @@ class DBSCANTest extends FlatSpec with Matchers {
         splits.tail.map(_.toLong -> clusterID)
       }).toMap
 
-    val clusters = DBSCAN(eps, minPoints).cluster(points)
+    val si = points.foldLeft(SpatialIndex[TestPoint](eps))(_ + _)
+    val clusters = DBSCAN(eps, minPoints, si).cluster(points)
 
     clusters
       .filter(_.id == -1)
@@ -69,8 +72,8 @@ class DBSCANTest extends FlatSpec with Matchers {
   }
 
   /**
-    * http://people.cs.nctu.edu.tw/~rsliang/dbscan/testdatagen.html
-    */
+   * http://people.cs.nctu.edu.tw/~rsliang/dbscan/testdatagen.html
+   */
   it should "have 6 clusters and 20 outliers" in {
     doDatRes("/dat_4_6_6_20.txt", "/res_4_6_6_20.txt", 4, 6, 20)
   }
@@ -90,7 +93,8 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(1, 30.5, 29.5),
       TestPoint(2, 30.0, 30.5)
     )
-    val clusters = DBSCAN(2.0, 3).cluster(points)
+    val si = points.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val clusters = DBSCAN(2.0, 3, si).cluster(points)
     clusters.head.points should contain theSameElementsAs points
   }
 
@@ -105,7 +109,8 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(1, 39.2, 30.0),
       TestPoint(2, 40.8, 30.0)
     )
-    val clusters = DBSCAN(2.0, 3).cluster(points)
+    val si = points.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val clusters = DBSCAN(2.0, 3, si).cluster(points)
     clusters.head.points should contain theSameElementsAs points
   }
 
@@ -115,7 +120,8 @@ class DBSCANTest extends FlatSpec with Matchers {
         case Array(id, x, y) => TestPoint(id.toLong, x.toDouble, y.toDouble)
       }
     }).toArray
-    val clusters = DBSCAN(2, 3).clusters(points)
+    val si = points.foldLeft(SpatialIndex[TestPoint](2.0))(_ + _)
+    val clusters = DBSCAN(2.0, 3, si).clusters(points)
     clusters.head.points should contain theSameElementsAs points
   }
 

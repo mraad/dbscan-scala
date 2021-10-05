@@ -3,49 +3,58 @@ package com.esri.dbscan
 import com.esri.dbscan.Status.Status
 
 import scala.collection.mutable
-import scala.collection.parallel.ParMap
 
 /**
-  * Density Based Clusterer.
-  *
-  * @param eps                 the search distance to form a cluster.
-  * @param minPoints           the min number of points in a cluster.
-  * @param minPointsCalculator optional min number of points calculator, default is MinPointsLength.
-  */
+ * Density Based Clusterer.
+ *
+ * @param eps       the search distance to form a cluster.
+ * @param minPoints the min number of points in a cluster.
+ * @param nnSearch  a reference to a NNSearch implementation.
+ */
 class DBSCAN[T <: DBSCANPoint](eps: Double,
                                minPoints: Int,
-                               minPointsCalculator: MinPointsCalculator[T] = new MinPointsLength[T]
+                               nnSearch: NNSearch[T]
                               ) extends Serializable {
 
   private case class State(status: Status = Status.UNCLASSIFIED, clusterID: Int = -1)
 
   private val stateMap = mutable.Map.empty[Long, State].withDefaultValue(State())
 
-  private def dbscan(iter: Iterable[T]): Unit = {
-    val neighborhood = calcNeighborhood(iter)
+  private def _dbscan(iter: Iterable[T]): Iterable[T] = {
     var clusterID = 0
-    iter.foreach(elem => {
+    iter.map(elem => {
       val status = stateMap(elem.id).status
       if (status == Status.UNCLASSIFIED) {
-        val neighbors = neighborhood(elem.id)
-        if (minPointsCalculator.minPoints(neighbors) < minPoints) {
+        val neighbors = nnSearch.neighborsOf(elem)
+        if (neighbors.size < minPoints) {
           stateMap(elem.id) = State(Status.NOISE)
         } else {
-          clusterID = expand(elem, neighbors, neighborhood, clusterID)
+          clusterID = expand(elem, neighbors, clusterID)
         }
       }
+      elem
     })
   }
 
   /**
-    * Cluster the input points.
-    *
-    * @param iter the points to cluster.
-    * @return iterable of Cluster instance.
-    */
+   * Cluster the input points.
+   *
+   * @param iter the points to cluster.
+   * @return iterable of points to cluster id tuple.
+   */
+  def dbscan(iter: Iterable[T]): Iterable[(T, Int)] = {
+    _dbscan(iter)
+      .map(elem => (elem, stateMap(elem.id).clusterID))
+  }
+
+  /**
+   * Cluster the input points.
+   *
+   * @param iter the points to cluster.
+   * @return iterable of Cluster instance.
+   */
   def cluster(iter: Iterable[T]): Iterable[Cluster[T]] = {
-    dbscan(iter)
-    iter
+    _dbscan(iter)
       .map(elem => stateMap(elem.id).clusterID -> elem)
       .groupBy(_._1)
       .map {
@@ -54,14 +63,13 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
   }
 
   /**
-    * Cluster the input points, but do not return noise points.
-    *
-    * @param iter the points to cluster.
-    * @return iterable of Cluster instance.
-    */
+   * Cluster the input points, but do not return noise points.
+   *
+   * @param iter the points to cluster.
+   * @return iterable of Cluster instance.
+   */
   def clusters(iter: Iterable[T]): Iterable[Cluster[T]] = {
-    dbscan(iter)
-    iter
+    _dbscan(iter)
       .map(elem => stateMap(elem.id).clusterID -> elem)
       .filterNot(_._1 == -1)
       .groupBy(_._1)
@@ -70,17 +78,16 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
       }
   }
 
-  private def calcNeighborhood(points: Iterable[T]): ParMap[Long, Seq[T]] = {
-    val si = points.foldLeft(SpatialIndex[T](eps))(_ + _)
-    points
-      .par
-      .map(p => p.id -> (si findNeighbors p))
-      .toMap
-  }
+  //  private def calcNeighborhood(points: Iterable[T]): ParMap[Long, Seq[T]] = {
+  //    val si = points.foldLeft(SpatialIndex[T](eps))(_ + _)
+  //    points
+  //      .par
+  //      .map(p => p.id -> (si findNeighbors p))
+  //      .toMap
+  //  }
 
   private def expand(elem: T,
                      neighbors: Seq[T],
-                     neighborhood: ParMap[Long, Seq[T]],
                      clusterID: Int
                     ): Int = {
     stateMap(elem.id) = State(Status.CLASSIFIED, clusterID)
@@ -94,8 +101,8 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
       }
       else if (status == Status.UNCLASSIFIED) {
         stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
-        val neighborNeighbors = neighborhood(neighbor.id)
-        if (minPointsCalculator.minPoints(neighborNeighbors) >= minPoints) {
+        val neighborNeighbors = nnSearch.neighborsOf(neighbor)
+        if (neighborNeighbors.size >= minPoints) {
           queue ++= neighborNeighbors
         }
       }
@@ -105,21 +112,21 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
 }
 
 /**
-  * Companion object.
-  */
+ * Companion object.
+ */
 object DBSCAN extends Serializable {
   /**
-    * Create a DBSCAN instance.
-    *
-    * @param eps                 the search distance.
-    * @param minPoints           the min number of points in the search distance to start or append to a cluster.
-    * @param minPointsCalculator optional min number of points calculator, default is MinPointsLength.
-    * @return a DBSCAN instance.
-    */
+   * Create a DBSCAN instance.
+   *
+   * @param eps       the search distance.
+   * @param minPoints the min number of points in the search distance to start or append to a cluster.
+   * @param nnSearch  Implementation of NNSearch trait.
+   * @return a DBSCAN instance.
+   */
   def apply[T <: DBSCANPoint](eps: Double,
                               minPoints: Int,
-                              minPointsCalculator: MinPointsCalculator[T] = new MinPointsLength[T]
+                              nnSearch: NNSearch[T]
                              ): DBSCAN[T] = {
-    new DBSCAN[T](eps, minPoints, minPointsCalculator)
+    new DBSCAN[T](eps, minPoints, nnSearch)
   }
 }

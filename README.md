@@ -4,6 +4,8 @@
 
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
+*2021-10-04*: Breaking changes to make the API more abstract.
+
 *2018-03-27*: Added `MinPointsCalculator` trait and default `MinPointsLength` implementation. This enables the implementation of a weighted `DBSCANPoint` implementation, where the min points to form a cluster can be calculated based on the sum of the weighted points.
 
 *2018-03-04*: Revamped the implementation to make DBSCANPoint an immutable trait.
@@ -30,7 +32,7 @@ And the test code still passes!
 
 ### Boundary Conditions
 
-The concept of neighborhood is implemented as d<sub>i</sub><sup>2</sup> &le; &epsilon;<sup>2</sup>, where d<sub>i</sub> is the euclidean distance between two points.
+The concept of neighborhood is implemented as d<sub>i</sub><sup>2</sup> &lt; &epsilon;<sup>2</sup>, where d<sub>i</sub> is the euclidean distance between two points.
 
 ## Publish to [Bintray](https://bintray.com/mraad/maven/dbscan-scala/view)
 
@@ -57,31 +59,31 @@ mvn release:perform
 </repositories>
 ```
 
-Scala 2.10 dependency:
-
-```xml
-<dependency>
-    <groupId>com.esri</groupId>
-    <artifactId>dbscan-scala</artifactId>
-    <version>0.24</version>
-    <classifier>2.10<classifier/
-</dependency>
-```
-
 Scala 2.11 dependency:
 
 ```xml
 <dependency>
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.24</version>
-    <classifier>2.11<classifier/
+    <version>0.30</version>
+    <classifier>2.11</classifier>
+</dependency>
+```
+
+Scala 2.12 dependency:
+
+```xml
+<dependency>
+    <groupId>com.esri</groupId>
+    <artifactId>dbscan-scala</artifactId>
+    <version>0.30</version>
+    <classifier>2.12</classifier>
 </dependency>
 ```
 
 ### TODO
 
-- Make DBSCANPoint multi-dimensional.
+- ~~Make DBSCANPoint multi-dimensional.~~
 - ~~Implement weighted clustering.~~
 - ~~Make DBSCANPoint immutable and return ClusteredPoint.~~
 - ~~Remove dependency on [Esri Geometry API](https://github.com/Esri/geometry-api-java).~~

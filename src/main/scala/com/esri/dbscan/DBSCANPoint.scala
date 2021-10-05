@@ -1,9 +1,11 @@
 package com.esri.dbscan
 
-import com.esri.euclid.Euclid
-
-trait DBSCANPoint extends Euclid {
-
-  def id(): Long
-
+/**
+ * Base trait for DBSCAN input point.
+ */
+trait DBSCANPoint extends Serializable {
+  /**
+   * @return point identifier.
+   */
+  def id: Long
 }
