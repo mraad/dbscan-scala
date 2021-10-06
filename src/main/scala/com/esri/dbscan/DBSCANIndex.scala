@@ -4,7 +4,7 @@ import scala.collection.mutable
 import scala.collection.mutable.ArrayBuffer
 
 /**
- * Spatial index to quickly locate neighbors of a point.
+ * Spatial index to quickly locate neighbors of a 2D point within eps of each other.
  * The implementation is based on a simple grid, where all the indexed points are grouped together based on the cell in the grid that they fall into.
  *
  * @param eps the cell size.
@@ -24,9 +24,6 @@ case class DBSCANIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
    * @return this spatial index.
    */
   def +(point: T): DBSCANIndex[T] = {
-    //    val c = (point.x / eps).floor.toLong
-    //    val r = (point.y / eps).floor.toLong
-    //    grid.getOrElseUpdate((r, c), ArrayBuffer[T]()) += point
     this.append(point)
     this
   }
@@ -49,7 +46,7 @@ case class DBSCANIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
    *
    * @param point the point to search around.
    * @return a sequence of points that are in the neighborhood of the supplied point.
-   * @deprecated
+   * @deprecated use neighborsOf.
    */
   def findNeighbors(point: T): Seq[T] = {
     val c = (point.x / eps).floor.toLong
@@ -69,9 +66,9 @@ case class DBSCANIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
   }
 
   /**
-   * Find all the points within eps squared of given point.
+   * Find all the points within eps squared of a given point.
    *
-   * @param point the center point.
+   * @param point the point to search around.
    * @return a sequence of points that are in the neighborhood of the supplied point.
    */
   def neighborsOf(point: T): Seq[T] = {
