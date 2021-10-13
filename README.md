@@ -1,6 +1,6 @@
 # DBSCAN in Scala
 
-[DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) 2D (for now) implementation in Scala.
+[DBSCAN](https://en.wikipedia.org/wiki/DBSCAN) ~~2D (for now)~~ implementation in Scala.
 
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
