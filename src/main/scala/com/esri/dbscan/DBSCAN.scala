@@ -7,16 +7,12 @@ import scala.collection.mutable
 /**
  * Density Based Clusterer.
  *
- * @param eps       the search distance to form a cluster.
  * @param minPoints the min number of points in a cluster.
  * @param nnSearch  a reference to a NNSearch implementation.
  */
-class DBSCAN[T <: DBSCANPoint](eps: Double,
-                               minPoints: Int,
-                               nnSearch: NNSearch[T]
-                              ) extends Serializable {
+class DBSCAN[T <: DBSCANPoint](minPoints: Int, nnSearch: NNSearch[T]) extends Serializable {
 
-  private case class State(status: Status = Status.UNCLASSIFIED, clusterID: Int = -1)
+  private case class State(status: Status = Status.UNK, clusterID: Int = -1)
 
   private val stateMap = mutable.Map.empty[Long, State].withDefaultValue(State())
 
@@ -24,23 +20,41 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
                       neighbors: Seq[T],
                       clusterID: Int
                      ): Int = {
-    stateMap(elem.id) = State(Status.CLASSIFIED, clusterID)
+    stateMap(elem.id) = State(Status.CLUSTERED, clusterID)
+    /*
     val queue = new mutable.Queue[T]()
     queue ++= neighbors
     while (queue.nonEmpty) {
       val neighbor = queue.dequeue
       val status = stateMap(neighbor.id).status
       if (status == Status.NOISE) {
-        stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
+        stateMap(neighbor.id) = State(Status.CORE, clusterID)
       }
-      else if (status == Status.UNCLASSIFIED) {
-        stateMap(neighbor.id) = State(Status.CLASSIFIED, clusterID)
+      else if (status == Status.UNK) {
+        stateMap(neighbor.id) = State(Status.CORE, clusterID)
         val neighborNeighbors = nnSearch.neighborsOf(neighbor)
         if (neighborNeighbors.size >= minPoints) {
           queue ++= neighborNeighbors
         }
       }
     }
+     */
+    val queue = mutable.Queue[Seq[T]](neighbors)
+    while (queue.nonEmpty) {
+      queue.dequeue().foreach(neighbor => {
+        val status = stateMap(neighbor.id).status
+        status match {
+          case Status.CLUSTERED => // Do nothing if core
+          case _ =>
+            stateMap(neighbor.id) = State(Status.CLUSTERED, clusterID)
+            val neighbors = nnSearch.neighborsOf(neighbor)
+            if (neighbors.size >= minPoints) {
+              queue.enqueue(neighbors)
+            }
+        }
+      })
+    }
+
     clusterID + 1
   }
 
@@ -48,7 +62,7 @@ class DBSCAN[T <: DBSCANPoint](eps: Double,
     var clusterID = 0
     iter.map(elem => {
       val status = stateMap(elem.id).status
-      if (status == Status.UNCLASSIFIED) {
+      if (status == Status.UNK) {
         val neighbors = nnSearch.neighborsOf(elem)
         if (neighbors.size < minPoints) {
           stateMap(elem.id) = State(Status.NOISE)
@@ -111,15 +125,11 @@ object DBSCAN extends Serializable {
   /**
    * Create a DBSCAN instance.
    *
-   * @param eps       the search distance.
    * @param minPoints the min number of points in the search distance to start or append to a cluster.
    * @param nnSearch  Implementation of NNSearch trait.
    * @return a DBSCAN instance.
    */
-  def apply[T <: DBSCANPoint](eps: Double,
-                              minPoints: Int,
-                              nnSearch: NNSearch[T]
-                             ): DBSCAN[T] = {
-    new DBSCAN[T](eps, minPoints, nnSearch)
+  def apply[T <: DBSCANPoint](minPoints: Int, nnSearch: NNSearch[T]): DBSCAN[T] = {
+    new DBSCAN[T](minPoints, nnSearch)
   }
 }

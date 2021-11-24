@@ -1,12 +1,12 @@
 package com.esri.dbscan
 
 /**
-  * Assignment status of a DBSCANPoint.
-  * UNCLASSIFIED -> Initial state
-  * CLASSIFIED -> Assigned to a cluster
-  * NOISE -> Noise.
-  */
+ * Assignment status of a DBSCANPoint.
+ * UNK -> Unknown state
+ * CORE -> Assigned to a cluster
+ * NOISE -> Noise.
+ */
 private[dbscan] object Status extends Enumeration {
   type Status = Status.Value
-  val UNCLASSIFIED, CLASSIFIED, NOISE = Value
+  val UNK, CLUSTERED, NOISE = Value
 }

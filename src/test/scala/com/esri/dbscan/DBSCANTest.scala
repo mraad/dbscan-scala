@@ -15,7 +15,7 @@ class DBSCANTest extends FlatSpec with Matchers {
     )
 
     val si = points.foldLeft(DBSCANIndex[TestPoint](3.0))(_ + _)
-    val clusters = DBSCAN(3.0, 2, si).cluster(points)
+    val clusters = DBSCAN(2, si).cluster(points)
 
     clusters.size shouldBe 1
   }
@@ -30,7 +30,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(5, 3, 0)
     )
     val si = points.foldLeft(DBSCANIndex[TestPoint](2.5))(_ + _)
-    val clusters = DBSCAN(2.5, 2, si).clusters(points).toList
+    val clusters = DBSCAN(2, si).clusters(points).toList
 
     clusters.length shouldBe 1
     clusters.head.points should contain only(points(0), points(1), points(2), points(3), points(4))
@@ -57,7 +57,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       }).toMap
 
     val si = points.foldLeft(DBSCANIndex[TestPoint](eps))(_ + _)
-    val clusters = DBSCAN(eps, minPoints, si).cluster(points)
+    val clusters = DBSCAN(minPoints, si).cluster(points)
 
     clusters
       .filter(_.id == -1)
@@ -94,7 +94,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(2, 30.0, 30.5)
     )
     val si = points.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
-    val clusters = DBSCAN(2.0, 3, si).cluster(points)
+    val clusters = DBSCAN(3, si).cluster(points)
     clusters.head.points should contain theSameElementsAs points
   }
 
@@ -110,7 +110,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       TestPoint(2, 40.8, 30.0)
     )
     val si = points.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
-    val clusters = DBSCAN(2.0, 3, si).cluster(points)
+    val clusters = DBSCAN(3, si).cluster(points)
     clusters.head.points should contain theSameElementsAs points
   }
 
@@ -121,7 +121,7 @@ class DBSCANTest extends FlatSpec with Matchers {
       }
     }).toArray
     val si = points.foldLeft(DBSCANIndex[TestPoint](2.0))(_ + _)
-    val clusters = DBSCAN(2.0, 3, si).clusters(points)
+    val clusters = DBSCAN(3, si).clusters(points)
     clusters.head.points should contain theSameElementsAs points
   }
 

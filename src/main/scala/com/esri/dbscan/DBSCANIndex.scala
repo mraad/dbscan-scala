@@ -14,7 +14,7 @@ case class DBSCANIndex[T <: DBSCANPoint2D](eps: Double) extends NNSearch[T] {
   type SIKey = (Long, Long)
   type SIVal = mutable.ArrayBuffer[T]
 
-  val grid: mutable.Map[(Long, Long), SIVal] = mutable.Map[SIKey, SIVal]()
+  val grid: mutable.Map[SIKey, SIVal] = mutable.Map[SIKey, SIVal]()
   val eps2: Double = eps * eps
 
   /**

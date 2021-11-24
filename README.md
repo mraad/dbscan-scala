@@ -4,6 +4,8 @@
 
 [![Download](https://api.bintray.com/packages/mraad/maven/dbscan-scala/images/download.svg)](https://bintray.com/mraad/maven/dbscan-scala/_latestVersion)
 
+*2021-11-23*: Removed `eps` from DBSCAN as proximity is defined by `NNSearch` trait implementation.
+
 *2021-10-04*: Breaking changes to make the API more abstract.
 
 *2018-03-27*: Added `MinPointsCalculator` trait and default `MinPointsLength` implementation. This enables the implementation of a weighted `DBSCANPoint` implementation, where the min points to form a cluster can be calculated based on the sum of the weighted points.
