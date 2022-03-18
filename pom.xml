@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.esri</groupId>
     <artifactId>dbscan-scala</artifactId>
-    <version>0.32-SNAPSHOT</version>
+    <version>${revision}</version>
     <packaging>jar</packaging>
 
     <url>https://github.com/mraad/dbscan-scala</url>
@@ -34,6 +35,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <this.version>0.33</this.version>
+        <revision>${this.version}-${scala.compact}</revision>
     </properties>
 
     <distributionManagement>
@@ -67,6 +70,7 @@
     </dependencies>
 
     <build>
+        <!--
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -76,11 +80,12 @@
                 </plugin>
             </plugins>
         </pluginManagement>
+        -->
         <plugins>
             <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
-                <version>4.5.4</version>
+                <version>4.5.6</version>
                 <executions>
                     <execution>
                         <id>scala-compile-first</id>
@@ -109,7 +114,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.10.1</version>
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
@@ -144,7 +149,8 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.2</version>
+                <!--
                 <executions>
                     <execution>
                         <goals>
@@ -155,6 +161,7 @@
                         </configuration>
                     </execution>
                 </executions>
+                -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -187,21 +194,21 @@
         </profile>
         <profile>
             <id>scala-2.12</id>
+            <properties>
+                <java.version>1.8</java.version>
+                <scala.compact>2.12</scala.compact>
+                <scala.version>${scala.compact}.15</scala.version>
+            </properties>
+        </profile>
+        <profile>
+            <id>release</id>
             <activation>
                 <activeByDefault>true</activeByDefault>
             </activation>
             <properties>
                 <java.version>1.8</java.version>
                 <scala.compact>2.12</scala.compact>
-                <scala.version>${scala.compact}.10</scala.version>
-            </properties>
-        </profile>
-        <profile>
-            <id>release</id>
-            <properties>
-                <java.version>1.8</java.version>
-                <scala.compact>2.12</scala.compact>
-                <scala.version>${scala.compact}.10</scala.version>
+                <scala.version>${scala.compact}.15</scala.version>
             </properties>
         </profile>
     </profiles>
